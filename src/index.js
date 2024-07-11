@@ -1,4 +1,4 @@
-import { Task, List } from "./class";
+import { Todo, List } from "./class";
 import * as App from "./app";
 import * as Output from "./output";
 
@@ -7,7 +7,9 @@ function main() {
   App.addList(defaultList);
 
   Output.intro();
-  Output.handleListActions();
+  for (let i = 0; i < 3; i++) {
+    Output.printListActions();
+  }
 }
 
 main();

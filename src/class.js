@@ -1,22 +1,11 @@
-export class Task {
-  constructor(
-    name,
-    desc = "",
-    startDate,
-    endDate,
-    time = 0,
-    priority,
-    complete,
-    tags = []
-  ) {
-    this._name = name;
-    this._desc = desc;
-    this._startDate = startDate;
-    this._endDate = endDate;
-    this._time = time;
-    this._priority = priority;
-    this._complete = complete;
-    this._tags = tags;
+export class Todo {
+  constructor(name, desc = "", dueDate, priority, complete, tags = []) {
+    this.name = name;
+    this.desc = desc;
+    this.dueDate = dueDate;
+    this.priority = priority;
+    this.complete = complete;
+    this.tags = tags;
   }
   get name() {
     return this._name;
@@ -30,17 +19,11 @@ export class Task {
   set desc(desc) {
     this._desc = desc;
   }
-  get date() {
-    return this._date;
+  get dueDate() {
+    return this._dueDate;
   }
-  set date(date) {
-    this._date = date;
-  }
-  get time() {
-    return this._time;
-  }
-  set time(time) {
-    this._time = time;
+  set dueDate(date) {
+    this._dueDate = date;
   }
   get priority() {
     return this._priority;
@@ -54,12 +37,19 @@ export class Task {
   set complete(complete) {
     this._complete = complete;
   }
+
+  toString() {
+    return `${this.name} ${this.date}`;
+  }
+  printDetailed() {
+    return `${this.name} ${this.date}\n${this.desc}\nComplete: ${this.complete}`;
+  }
 }
 
 export class List {
   constructor(name, todos = []) {
-    this._name = name;
-    this._todos = todos;
+    this.name = name;
+    this.todos = todos;
   }
   get name() {
     return this._name;
@@ -69,6 +59,9 @@ export class List {
   }
   get todos() {
     return this._todos;
+  }
+  set todos(todos) {
+    this._todos = todos;
   }
   addTodo(todo) {
     this._todos.push(todo);
