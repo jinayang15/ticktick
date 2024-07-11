@@ -61,7 +61,7 @@ export class Todo {
     if (this.time) {
       output += this.dueDate.toTimeString();
     }
-    output += `\n${this.desc}\nComplete: ${this.complete}`;
+    output += `\n${this.desc}\nPriority: ${this.priority}\nComplete: ${this.complete}`;
     return output;
   }
 }

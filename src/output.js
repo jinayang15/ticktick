@@ -79,7 +79,7 @@ function printAccessTodo(list) {
   const todos = list.todos;
   if (todos.length > 0) {
     for (let i = 0; i < todos.length; i++) {
-      console.log(`${i + 1}.${todos[i]}`);
+      console.log(`${i + 1}. ${todos[i]}`);
     }
     console.log(" ");
     let choice = Number(prompt("Please choose a to-do to access: "));
@@ -101,17 +101,24 @@ function printEditTodo(todo) {
     choice = prompt("Please choose 'y' or 'n'");
   }
   if (choice == "y") {
+    const editTodoActions = [
+      editTodoName,
+      editTodoDesc,
+      editTodoDueDate,
+      editTodoPriority,
+      editTodoComplete,
+    ];
     console.log("1. Name");
     console.log("2. Description");
-    console.log("3. Due Date");
-    console.log("4. Time");
-    console.log("5. Priority");
-    console.log("6. Complete");
+    console.log("3. Due Date/Time");
+    console.log("4. Priority");
+    console.log("5. Complete");
     console.log(" ");
     let choice = Number(prompt("Which attribute would you like to edit?"));
-    while (!checkChoice(choice, 1, 6)) {
+    while (!checkChoice(choice, 1, 5)) {
       choice = Number(prompt("Please pick between one of the numbers!"));
     }
+    editTodoActions[choice - 1](todo);
   }
 }
 
@@ -143,7 +150,6 @@ function printAddTodo(list) {
     dueDate = dueDate + " " + time;
   } else addTime = false;
   dueDate = new Date(dueDate);
-  console.log(dueDate);
 
   let priority = Number(
     prompt("Choose priority level (0 - lowest, 3 - highest): ")
@@ -172,6 +178,64 @@ function printDeleteTodo(list) {
     console.log("To-do has been removed.");
   } else {
     console.log("No to-dos to remove.");
+  }
+}
+
+function editTodoName(todo) {
+  const name = prompt("Name: ");
+  todo.name = name;
+  console.log("Changed the name.");
+}
+function editTodoDesc(todo) {
+  const desc = prompt("Description: ");
+  todo.desc = desc;
+  console.log("Changed the description.");
+}
+function editTodoDueDate(todo) {
+  let dueDate = prompt("Enter due date (YYYY/MM/DD)");
+  let testDate = new Date(dueDate);
+  while (!checkValidDate(testDate)) {
+    dueDate = prompt("Please enter a valid date.");
+    testDate = new Date(dueDate);
+  }
+  let addTime = prompt("Would you like to add a time? (y/n)");
+  addTime = addTime.toLowerCase();
+  while (addTime != "y" && addTime != "n") {
+    addTime = prompt("Please choose 'y' or 'n'");
+  }
+
+  if (addTime == "y") {
+    addTime = true;
+    let time = prompt("Add a time in 24-hour format (HH:MM): ");
+    let testTime = new Date(dueDate + " " + time);
+    while (!checkValidDate(testTime)) {
+      time = prompt("Please enter a valid time.");
+      testTime = new Date(dueDate + " " + time);
+    }
+    dueDate = dueDate + " " + time;
+  } else addTime = false;
+  dueDate = new Date(dueDate);
+  todo.dueDate = dueDate;
+  console.log("Changed date/time.");
+}
+
+function editTodoPriority(todo) {
+  let priority = Number(
+    prompt("Choose priority level (0 - lowest, 3 - highest): ")
+  );
+  while (!checkChoice(priority, 0, 3)) {
+    priority = Number(prompt("Please pick between one of the numbers!"));
+  }
+  todo.priority = priority;
+  console.log("Changed to new priority.");
+}
+
+function editTodoComplete(todo) {
+  todo.complete = !todo.complete;
+  if (todo.complete) {
+    console.log("Changed to complete");
+  } else {
+    console.log("Changed to incomplete");
   }
 }
 
