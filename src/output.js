@@ -1,14 +1,13 @@
 import * as App from "./app";
 import { Todo, List } from "./class";
 
-const _listActions = [printAccessList, printAddList, printDeleteList];
-const _toDoActions = [printAccessTodo, printAddTodo];
-
 export function intro() {
   console.log("Welcome to To-Do List!");
 }
 
 export function printListActions() {
+  // use an array of functions for easy access
+  const listActions = [printAccessList, printAddList, printDeleteList];
   console.log("1. Access an available list");
   console.log("2. Add new list");
   console.log("3. Delete a list");
@@ -17,7 +16,7 @@ export function printListActions() {
   while (!checkChoice(choice, 1, 3)) {
     choice = Number(prompt("Please pick between one of the numbers!"));
   }
-  _listActions[choice - 1]();
+  listActions[choice - 1]();
 }
 
 function printAccessList() {
@@ -63,6 +62,8 @@ function printDeleteList() {
 }
 
 function printToDoActions(list) {
+  // use an array of functions for easy access
+  const toDoActions = [printAccessTodo, printAddTodo, printDeleteTodo];
   console.log("1. Access/Edit a to-do");
   console.log("2. Add a to-do");
   console.log("3. Delete a to-do");
@@ -71,7 +72,7 @@ function printToDoActions(list) {
   while (!checkChoice(choice, 1, 3)) {
     choice = Number(prompt("Please pick between one of the numbers!"));
   }
-  _toDoActions[choice - 1](list);
+  toDoActions[choice - 1](list);
 }
 
 function printAccessTodo(list) {
@@ -93,6 +94,7 @@ function printAccessTodo(list) {
 
 function printEditTodo(todo) {
   console.log(todo.printDetailed());
+  console.log(" ");
   let choice = prompt("Would you like to edit the to-do? (y/n)");
   choice = choice.toLowerCase();
   while (choice != "y" && choice != "n") {
@@ -105,6 +107,7 @@ function printEditTodo(todo) {
     console.log("4. Time");
     console.log("5. Priority");
     console.log("6. Complete");
+    console.log(" ");
     let choice = Number(prompt("Which attribute would you like to edit?"));
     while (!checkChoice(choice, 1, 6)) {
       choice = Number(prompt("Please pick between one of the numbers!"));
@@ -129,6 +132,7 @@ function printAddTodo(list) {
   }
 
   if (addTime == "y") {
+    addTime = true;
     let time = prompt("Add a time in 24-hour format (HH:MM): ");
     let testTime = new Date(dueDate + " " + time);
     while (!checkValidDate(testTime)) {
@@ -137,7 +141,7 @@ function printAddTodo(list) {
       testTime = new Date(dueDate + " " + time);
     }
     dueDate = dueDate + " " + time;
-  }
+  } else addTime = false;
   dueDate = new Date(dueDate);
   console.log(dueDate);
 
@@ -148,8 +152,27 @@ function printAddTodo(list) {
     priority = Number(prompt("Please pick between one of the numbers!"));
   }
   const complete = false;
-  const newTodo = new Todo(name, desc, dueDate, priority, complete);
+  const newTodo = new Todo(name, desc, dueDate, addTime, priority, complete);
   list.addTodo(newTodo);
+  console.log("New to-do was added.");
+}
+
+function printDeleteTodo(list) {
+  const todos = list.todos;
+  if (todos.length > 0) {
+    for (let i = 0; i < todos.length; i++) {
+      console.log(`${i + 1}. ${todos[i]}`);
+    }
+    console.log(" ");
+    let choice = Number(prompt("Select a todo to delete: "));
+    while (!checkChoice(choice, 1, todos.length)) {
+      choice = Number(prompt("Pick between one of the numbers!"));
+    }
+    list.deleteTodo(choice - 1);
+    console.log("To-do has been removed.");
+  } else {
+    console.log("No to-dos to remove.");
+  }
 }
 
 function checkChoice(choice, lowBound, highBound) {

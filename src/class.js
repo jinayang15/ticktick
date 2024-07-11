@@ -1,8 +1,17 @@
 export class Todo {
-  constructor(name, desc = "", dueDate, priority, complete, tags = []) {
+  constructor(
+    name,
+    desc = "",
+    dueDate,
+    time = false,
+    priority,
+    complete,
+    tags = []
+  ) {
     this.name = name;
     this.desc = desc;
     this.dueDate = dueDate;
+    this.time = time;
     this.priority = priority;
     this.complete = complete;
     this.tags = tags;
@@ -22,8 +31,14 @@ export class Todo {
   get dueDate() {
     return this._dueDate;
   }
-  set dueDate(date) {
-    this._dueDate = date;
+  set dueDate(dueDate) {
+    this._dueDate = dueDate;
+  }
+  get time() {
+    return this._time;
+  }
+  set time(bool) {
+    this._time = bool;
   }
   get priority() {
     return this._priority;
@@ -39,10 +54,15 @@ export class Todo {
   }
 
   toString() {
-    return `${this.name} ${this.date}`;
+    return `${this.name} ${this.dueDate.toDateString()}`;
   }
   printDetailed() {
-    return `${this.name} ${this.date}\n${this.desc}\nComplete: ${this.complete}`;
+    let output = `${this.name} ${this.dueDate.toDateString()} `;
+    if (this.time) {
+      output += this.dueDate.toTimeString();
+    }
+    output += `\n${this.desc}\nComplete: ${this.complete}`;
+    return output;
   }
 }
 
@@ -66,7 +86,7 @@ export class List {
   addTodo(todo) {
     this._todos.push(todo);
   }
-  removeTodo(index) {
+  deleteTodo(index) {
     this._todos.splice(index, 1);
   }
 }
