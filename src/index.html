@@ -35,7 +35,7 @@
             <span class="group-by period text">All Tasks</span>
           </div>
         </div>
-        <hr />
+        <hr class="categories separator" />
         <div class="group-by list container">
           <h4 class="group-by list heading">Lists</h3>
           <div class="group-by list item">
@@ -43,7 +43,7 @@
             <span class="group-by list text">Default</span>
           </div>
         </div>
-        <hr>
+        <hr class="categories separator">
         <div class="group-by other container">
             <div class="group-by other item">
                 <img class="group-by other svg" src="./assets/checkbox_checked.svg" alt="">
@@ -70,9 +70,35 @@
             </div>
         </div>
         <div class="task container">
-            <img class="task svg" src="./assets/checkbox.svg">
-            <span class="task name">broccoli</span>
+            <label for="checkbox">
+              <input name="checkbox" class="task checkbox" type="checkbox">
+            </label>
+            <div class="task-details container">
+              <span class="task name">Egg noodles</span>
+              <span class="task due-date">5 Days Left</span>
+            </div>
         </div>
+        <hr class="task separator"/>
+        <div class="task container">
+          <label for="checkbox">
+          <input class="task checkbox" type="checkbox">
+        </label>
+            <div class="task-details container">
+              <span class="task name">chicken or beef</span>
+              <span class="task due-date">Today</span>
+            </div>
+        </div>
+        <hr class="task separator"/>
+        <div class="task container">
+          <label for="checkbox">
+          <input class="task checkbox" type="checkbox">
+        </label>
+          <div class="task-details container">
+            <span class="task name">1 carrot</span>
+            <span class="task due-date">Today</span>
+          </div>
+        </div>
+        <hr class="task separator"/>
       </div>
       <div class="view-task section container"></div>
     </div>

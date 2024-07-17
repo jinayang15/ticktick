@@ -7,6 +7,7 @@
   --silver: #b3b3b3;
   --grey: #858585;
   --bright-blue: #4872f9;
+  --light-blue: #ecf0ff;
 }
 
 html,
@@ -25,12 +26,14 @@ body {
   height: 100%;
 }
 
-hr {
-  margin: 1rem 0;
-  text-align: center;
-  height: 0;
+.separator {
   border: 0;
   border-top: 1px solid var(--platinum);
+}
+
+.categories.separator {
+  margin: 1rem 0;
+  text-align: center;
 }
 
 .categories.section.container {
@@ -136,10 +139,54 @@ hr {
   display: flex;
   align-items: center;
   padding: 0.5rem 1rem;
+  border-radius: 6px;
   gap: 0.5rem;
+}
+
+.task-details.container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .task.svg {
   width: 24px;
   height: auto;
+}
+
+.task.checkbox {
+  appearance: none;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+label[for="checkbox"] {
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--grey);
+  margin-right: auto;
+  border-radius: 4px;
+}
+
+label[for="checkbox"]:hover {
+  background-color: var(--off-white);
+}
+
+.task.due-date {
+  text-align: right;
+  margin-right: -0.75rem;
+  font-size: 12px;
+  color: var(--bright-blue);
+}
+
+.task.container:hover {
+  background-color: var(--light-blue);
+}
+
+.task.separator {
+  margin-left: calc(1rem + 26px);
+  margin-right: 4px;
+  text-align: right;
 }
