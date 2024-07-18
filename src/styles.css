@@ -155,14 +155,14 @@ body {
   height: auto;
 }
 
-.task.checkbox {
+input[type="checkbox"] {
   appearance: none;
   width: 0;
   height: 0;
   position: absolute;
 }
 
-label[for="checkbox"] {
+label:has(input[type="checkbox"]) {
   width: 18px;
   height: 18px;
   border: 1.5px solid var(--grey);
@@ -170,8 +170,8 @@ label[for="checkbox"] {
   border-radius: 4px;
 }
 
-label[for="checkbox"]:hover {
-  background-color: var(--off-white);
+label:has(input[type="checkbox"]):hover {
+  background-color: var(--platinum);
 }
 
 .task.due-date {
