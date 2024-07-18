@@ -24,14 +24,23 @@ body {
 #content {
   display: flex;
   height: 100%;
+  overflow: hidden;
 }
 
-.separator {
+hr.horizontal {
   border: 0;
   border-top: 1px solid var(--platinum);
 }
 
-.categories.separator {
+hr.vertical {
+  display: inline-block;
+  width: 1px;
+  height: 20px;
+  border: 0;
+  border-left: 1px solid var(--platinum);
+}
+
+.horizontal.categories.separator {
   margin: 1rem 0;
   text-align: center;
 }
@@ -185,8 +194,56 @@ label:has(input[type="checkbox"]):hover {
   background-color: var(--light-blue);
 }
 
-.task.separator {
+.horizontal.task.separator {
   margin-left: calc(1rem + 26px);
   margin-right: 4px;
   text-align: right;
+}
+
+.view-task.header.container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+}
+
+.view-task.svg {
+  display: inline;
+  width: 20px;
+  height: auto;
+}
+
+.vertical.view-task.separator {
+  margin: 0 0.5rem;
+}
+
+.view-task.header.container label {
+  margin: 0;
+}
+
+.view-task.date {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.view-task.due-date {
+  font-size: 0.75rem;
+  color: var(--grey);
+}
+
+.view-task.header.svg:last-child {
+  margin-left: auto;
+}
+
+.view-task.body.container {
+  padding: 1rem;
+  height: 100%;
+  overflow-y: scroll;
+}
+
+.view-task.name {
+  margin-bottom: 0.5rem;
+  font-size: 1.3rem;
+  font-weight: 500;
 }
