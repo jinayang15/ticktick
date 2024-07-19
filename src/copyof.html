@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./reset.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="content">
+      <div class="categories section container">
+        <div class="group-by period container">
+          <div class="group-by period item">
+            <img
+              class="group-by period svg"
+              src="./assets/calendar_view_day.svg"
+              alt=""
+            />
+            <span class="group-by period text">Today</span>
+          </div>
+          <div class="group-by period item">
+            <img
+              class="group-by period svg"
+              src="./assets/calendar_view_week.svg"
+              alt=""
+            />
+            <span class="group-by period text">Next 7 Days</span>
+          </div>
+          <div class="group-by period item">
+            <img
+              class="group-by period svg"
+              src="./assets/all_task_list.svg"
+              alt=""
+            />
+            <span class="group-by period text">All Tasks</span>
+          </div>
+        </div>
+        <hr class="horizontal categories separator" />
+        <div class="group-by list container">
+          <h4 class="group-by list heading">Lists</h3>
+          <div class="group-by list item">
+            <img class="group-by list svg" src="./assets/home_storage.svg" alt="">
+            <span class="group-by list text">Default</span>
+          </div>
+        </div>
+        <hr class="horizontal categories separator">
+        <div class="group-by other container">
+            <div class="group-by other item">
+                <img class="group-by other svg" src="./assets/checkbox_checked.svg" alt="">
+                <span class="group-by other text">Completed</span>
+            </div>
+            <div class="group-by other item">
+                <img class="group-by other svg" src="./assets/delete.svg" alt="">
+                <span class="group-by other text">Trash</span>
+            </div>
+        </div>
+      </div>
+      <div class="tasks section container">
+        <div class="tasks heading container">
+            <img class="tasks heading svg" src="./assets/menu_collapse.svg" alt="Menu Collapse">
+            <span class="tasks heading text">Default</span>
+            <img class="tasks heading svg" src="./assets/sort.svg" alt="Sort">
+            <img class="tasks heading svg" src="./assets/more_hori.svg" alt="More">
+        </div>
+        <div class="add-task input container">
+            <input id="add-task" name="add-task" type="text" placeholder="+ Add Task">
+            <div class="add-task svgs container">
+                <img src="./assets/calendar_options.svg" alt="Calendar Options" class="add-task svg">
+                <img src="./assets/arrow_down.svg" alt="Other Options" class="add-task svg">
+            </div>
+        </div>
+        <div class="task container">
+            <label>
+              <input class="task checkbox" type="checkbox">
+            </label>
+            <div class="task-details container">
+              <span class="task name">Egg noodles</span>
+              <span class="task due-date">5 Days Left</span>
+            </div>
+        </div>
+        <hr class="horizontal task separator"/>
+        <div class="task container">
+          <label>
+            <input class="task checkbox" type="checkbox">
+          </label>
+        </label>
+            <div class="task-details container">
+              <span class="task name">chicken or beef</span>
+              <span class="task due-date">Today</span>
+            </div>
+        </div>
+        <hr class="horizontal task separator"/>
+        <div class="task container">
+          <label>
+          <input class="task checkbox" type="checkbox">
+        </label>
+          <div class="task-details container">
+            <span class="task name">1 carrot</span>
+            <span class="task due-date">Today</span>
+          </div>
+        </div>
+        <hr class="horizontal task separator"/>
+      </div>
+      <div class="view-task section container">
+        <div class="view-task header container">
+          <label>
+            <input type="checkbox">
+          </label>
+          <hr class="vertical view-task separator">
+          <span class="view-task date container">
+            <img class="view-task header svg" src="./assets/calendar_icon.svg">
+            <span class="view-task due-date">Due Date</span>
+          </span>
+          <img class="view-task header svg" src="./assets/priority_flag.svg">
+        </div>
+        <hr class="horizontal view-task separator">
+        <div class="view-task body container">
+          <h3 class="view-task name">Egg noodles</h3>
+          <div id="task-description" class="view-task description" contenteditable="true" data-ph="Description"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
