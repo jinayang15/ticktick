@@ -23,6 +23,8 @@ export function createCategoriesContainer() {
   categoriesContainer.appendChild(createGroupByPeriod());
   categoriesContainer.appendChild(hrSeparator);
   categoriesContainer.appendChild(createGroupByList());
+  categoriesContainer.appendChild(hrSeparator);
+  categoriesContainer.appendChild(createGroupByOther());
 
   return categoriesContainer;
 }
@@ -48,10 +50,24 @@ function createGroupByList() {
 
   groupByListHeading.textContent = "Lists";
   groupByListHeading.classList.add("group-by", "list", "heading");
+  groupByListContainer.appendChild(groupByListHeading);
   groupByListContainer.appendChild(
     createGroupByItem("Default", "home_storage", "list")
   );
   return groupByListContainer;
+}
+
+function createGroupByOther() {
+  const groupByOtherContainer = document.createElement("div");
+  groupByOtherContainer.classList.add("group-by", "other", "container");
+  groupByOtherContainer.appendChild(
+    createGroupByItem("Completed", "checkbox_checked", "other")
+  );
+  groupByOtherContainer.appendChild(
+    createGroupByItem("Trash", "delete", "other")
+  );
+
+  return groupByOtherContainer;
 }
 
 function createGroupByItem(label, imgName, type) {
