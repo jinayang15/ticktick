@@ -9,8 +9,7 @@ function main() {
   const defaultList = new List("default");
   App.addList(defaultList);
 
-  const contentContainer = document.getElementById("content");
-  contentContainer.appendChild(Display.createCategoriesContainer());
+  Display.addCategoriesSection();
   // Output.intro();
   // for (let i = 0; i < 3; i++) {
   //   Output.printListActions();
