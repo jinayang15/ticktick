@@ -10,6 +10,7 @@ function main() {
   App.addList(defaultList);
 
   Display.addCategoriesSection();
+  Display.addToTasksSection();
   // Output.intro();
   // for (let i = 0; i < 3; i++) {
   //   Output.printListActions();

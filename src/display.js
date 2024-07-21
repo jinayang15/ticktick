@@ -1,7 +1,6 @@
 const images = importAllAssets(
   require.context("./assets", false, /\.(png|jpe?g|svg)$/)
 );
-console.table(images);
 
 function importAllAssets(r) {
   const paths = r.keys();
@@ -11,6 +10,11 @@ function importAllAssets(r) {
     images[key] = r(path);
   });
   return images;
+}
+
+export function clearSection(id) {
+  const sectionContainer = document.getElementById(id);
+  if (sectionContainer) sectionContainer.remove();
 }
 
 export function addCategoriesSection() {
@@ -36,12 +40,6 @@ export function addCategoriesSection() {
   );
 
   contentContainer.prepend(categoriesSectionContainer);
-}
-
-export function clearCategoriesSection() {
-  const categoriesSectionContainer =
-    document.getElementById("categories-section");
-  if (categoriesSectionContainer) categoriesSectionContainer.remove();
 }
 
 function createGroupByPeriod() {
@@ -97,8 +95,15 @@ function createGroupByItem(label, imgName, type) {
   return item;
 }
 
-function addToTasksSection() {
-  const taskSectionContainer = document.getElementById("tasks-section");
+export function addToTasksSection() {
+  const tasksSectionContainer = document.getElementById("tasks-section");
+
+  const taskSeparator = document.createElement("hr");
+  taskSeparator.classList.add("horizontal", "task", "separator");
+
+  tasksSectionContainer.append(createTaskSectionHeading(), createAddTaskBar());
+  tasksSectionContainer.appendChild(createTask(false, "Blah Blah", "Today"));
+  tasksSectionContainer.appendChild(taskSeparator.cloneNode(true));
 }
 
 function createTaskSectionHeading(listName = "Default") {
@@ -135,5 +140,59 @@ function createTaskSectionHeading(listName = "Default") {
 }
 
 function createAddTaskBar() {
-  const addTaskBar = document.createElement("add-task", "input", "container");
+  const addTaskBarContainer = document.createElement("div");
+  addTaskBarContainer.classList.add("add-task", "input", "container");
+
+  const addTaskBar = document.createElement("input");
+  addTaskBar.id = "add-task";
+  addTaskBar.name = "add-task";
+  addTaskBar.type = "text";
+  addTaskBar.placeholder = "+ Add Task";
+
+  const addTaskOptionsContainer = document.createElement("div");
+  addTaskOptionsContainer.classList.add("add-task", "svgs", "container");
+
+  const addTaskDate = document.createElement("img");
+  addTaskDate.classList.add("add-task", "svg");
+  addTaskDate.src = images["calendar_options"];
+  addTaskDate.alt = "Calendar Options";
+
+  const addTaskProperties = document.createElement("img");
+  addTaskProperties.classList.add("add-task", "svg");
+  addTaskProperties.src = images["arrow_down"];
+  addTaskProperties.alt = "Other Options";
+
+  addTaskOptionsContainer.append(addTaskDate, addTaskProperties);
+
+  addTaskBarContainer.append(addTaskBar, addTaskOptionsContainer);
+
+  return addTaskBarContainer;
+}
+
+function createTask(done, name, dueDate) {
+  const taskContainer = document.createElement("div");
+  taskContainer.classList.add("task", "container");
+
+  const taskCheckboxLabel = document.createElement("label");
+  const taskCheckbox = document.createElement("input");
+
+  taskCheckbox.classList.add("task", "checkbox");
+  taskCheckbox.type = "checkbox";
+  taskCheckbox.checked = done;
+  taskCheckboxLabel.appendChild(taskCheckbox);
+
+  const taskDetailsContainer = document.createElement("div");
+  taskDetailsContainer.classList.add("task-details", "container");
+
+  const taskName = document.createElement("span");
+  const taskDueDate = document.createElement("span");
+  taskName.classList.add("task", "name");
+  taskDueDate.classList.add("task", "due-date");
+  taskName.textContent = name;
+  taskDueDate.textContent = dueDate;
+
+  taskDetailsContainer.append(taskName, taskDueDate);
+  taskContainer.append(taskCheckboxLabel, taskDetailsContainer);
+
+  return taskContainer;
 }
