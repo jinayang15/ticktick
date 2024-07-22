@@ -196,3 +196,76 @@ function createTask(done, name, dueDate) {
 
   return taskContainer;
 }
+
+export function addToViewTaskSection() {
+  const viewTaskSection = document.getElementById("view-task-section");
+  const horizontalSeparator = document.createElement("hr");
+  horizontalSeparator.classList.add("horizontal", "view-task", "separator");
+  viewTaskSection.append(
+    createViewTaskHeader(),
+    horizontalSeparator,
+    createViewTaskBody()
+  );
+}
+
+function createViewTaskHeader(dueDate = "Due Date") {
+  const viewTaskHeaderContainer = document.createElement("div");
+  viewTaskHeaderContainer.classList.add("view-task", "header", "container");
+
+  const checkboxLabel = document.createElement("label");
+  const checkbox = document.createElement("input");
+  checkbox.classList.add("view-task", "checkbox");
+  checkbox.type = "checkbox";
+
+  checkboxLabel.appendChild(checkbox);
+
+  const verticalSeparator = document.createElement("hr");
+  verticalSeparator.classList.add("vertical", "view-task", "separator");
+
+  const viewTaskDateContainer = document.createElement("span");
+  viewTaskDateContainer.classList.add("view-task", "date", "container");
+
+  const viewTaskDueDateIcon = document.createElement("img");
+  viewTaskDueDateIcon.classList.add("view-task", "header", "svg");
+  viewTaskDueDateIcon.src = images["calendar_icon"];
+
+  const viewTaskDueDate = document.createElement("span");
+  viewTaskDueDate.classList.add("view-task", "due-date");
+  viewTaskDueDate.textContent = dueDate;
+
+  viewTaskDateContainer.append(viewTaskDueDateIcon, viewTaskDueDate);
+
+  const viewTaskPriority = document.createElement("img");
+  viewTaskPriority.classList.add("view-task", "header", "svg");
+  viewTaskPriority.src = images["priority_flag"];
+  viewTaskPriority.alt = "Priority";
+
+  viewTaskHeaderContainer.append(
+    checkboxLabel,
+    verticalSeparator,
+    viewTaskDateContainer,
+    viewTaskPriority
+  );
+
+  return viewTaskHeaderContainer;
+}
+
+function createViewTaskBody(name = "Task Name", desc = "") {
+  const viewTaskBodyContainer = document.createElement("div");
+  viewTaskBodyContainer.classList.add("view-task", "body", "container");
+
+  const viewTaskName = document.createElement("h3");
+  viewTaskName.classList.add("view-task", "name");
+  viewTaskName.contentEditable = true;
+  viewTaskName.textContent = name;
+
+  const viewTaskDescription = document.createElement("div");
+  viewTaskDescription.classList.add("view-task", "description");
+  viewTaskDescription.contentEditable = true;
+  viewTaskDescription.dataset.ph = "Description";
+  viewTaskDescription.textContent = desc;
+
+  viewTaskBodyContainer.append(viewTaskName, viewTaskDescription);
+
+  return viewTaskBodyContainer;
+}

@@ -247,6 +247,7 @@ label:has(input[type="checkbox"]):hover {
   margin-bottom: 0.5rem;
   font-size: 1.3rem;
   font-weight: 500;
+  outline: 0;
 }
 
 .view-task.description {
