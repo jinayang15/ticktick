@@ -1,3 +1,5 @@
+import * as App from "./app";
+
 const images = importAllAssets(
   require.context("./assets", false, /\.(png|jpe?g|svg)$/)
 );
@@ -13,16 +15,17 @@ function importAllAssets(r) {
 }
 
 export function clearSection(id) {
-  const sectionContainer = document.getElementById(id);
-  if (sectionContainer) sectionContainer.remove();
+  const section = document.getElementById(id);
+  section.textContent = "";
+  section.classList.add("hidden");
 }
 
-export function addCategoriesSection() {
-  const contentContainer = document.getElementById("content");
-  const categoriesSectionContainer = document.createElement("div");
+export function addToCategoriesSection() {
+  const categoriesSectionContainer =
+    document.getElementById("categories-section");
   const hrSeparator = document.createElement("hr");
 
-  categoriesSectionContainer.id = "categories-section";
+  categoriesSectionContainer.classList.remove("hidden");
 
   hrSeparator.classList.add("horizontal", "categories", "separator");
   categoriesSectionContainer.classList.add(
@@ -38,8 +41,6 @@ export function addCategoriesSection() {
     hrSeparator.cloneNode(true),
     createGroupByOther()
   );
-
-  contentContainer.prepend(categoriesSectionContainer);
 }
 
 function createGroupByPeriod() {
@@ -56,13 +57,26 @@ function createGroupByPeriod() {
 function createGroupByList() {
   const groupByListContainer = document.createElement("div");
   const groupByListHeading = document.createElement("h4");
+  const addListIcon = document.createElement("img");
 
   groupByListHeading.textContent = "Lists";
   groupByListHeading.classList.add("group-by", "list", "heading");
-  groupByListContainer.append(
-    groupByListHeading,
-    createGroupByItem("Default", "home_storage", "list")
-  );
+
+  addListIcon.id = "add-list";
+  addListIcon.src = images["add_list"];
+
+  groupByListHeading.appendChild(addListIcon);
+  groupByListContainer.appendChild(groupByListHeading);
+  for (const list of App.getLists()) {
+    const listContainer = createGroupByItem(list.name, "list_icon", "list");
+    listContainer.addEventListener("click", () => {
+      const tasksSection = document.getElementById("tasks-section");
+      clearSection("tasks-section");
+      tasksSection.classList.remove("hidden");
+      addToTasksSection(list);
+    });
+    groupByListContainer.appendChild(listContainer);
+  }
 
   return groupByListContainer;
 }
@@ -95,13 +109,18 @@ function createGroupByItem(label, imgName, type) {
   return item;
 }
 
-export function addToTasksSection() {
+export function addToTasksSection(list) {
   const tasksSectionContainer = document.getElementById("tasks-section");
 
   const taskSeparator = document.createElement("hr");
   taskSeparator.classList.add("horizontal", "task", "separator");
 
-  tasksSectionContainer.append(createTaskSectionHeading(), createAddTaskBar());
+  tasksSectionContainer.append(
+    createTaskSectionHeading(list.name),
+    createAddTaskBar()
+  );
+
+  
   tasksSectionContainer.appendChild(createTask(false, "Blah Blah", "Today"));
   tasksSectionContainer.appendChild(taskSeparator.cloneNode(true));
 }
@@ -114,6 +133,7 @@ function createTaskSectionHeading(listName = "Default") {
   menuToggle.classList.add("tasks", "heading", "svg");
   menuToggle.src = images["menu_collapse"];
   menuToggle.alt = "Menu Collapse";
+  menuToggle.id = "menu-toggle";
 
   const tasksListName = document.createElement("span");
   tasksListName.classList.add("tasks", "heading", "text");
@@ -268,4 +288,17 @@ function createViewTaskBody(name = "Task Name", desc = "") {
   viewTaskBodyContainer.append(viewTaskName, viewTaskDescription);
 
   return viewTaskBodyContainer;
+}
+
+export function addMenuToggle() {
+  const menuToggle = document.getElementById("menu-toggle");
+  menuToggle.addEventListener("click", () => {
+    if (menuToggle.src == images["menu_collapse"]) {
+      menuToggle.src = images["menu_expand"];
+      clearSection("categories-section");
+    } else {
+      menuToggle.src = images["menu_collapse"];
+      addToCategoriesSection();
+    }
+  });
 }

@@ -22,8 +22,7 @@ body {
 }
 
 #content {
-  display: grid;
-  grid-template-columns: 1fr 2fr 2fr;
+  display: flex;
   height: 100%;
   overflow: hidden;
 }
@@ -49,10 +48,12 @@ hr.vertical {
 .categories.section.container {
   padding: 1rem;
   padding-right: 0.5rem;
+  flex: 1;
 }
 
 .group-by.item,
 .group-by.heading {
+  position: relative;
   display: grid;
   grid-template-columns: max-content 1fr;
   align-items: center;
@@ -76,10 +77,25 @@ hr.vertical {
   height: 20px;
 }
 
+#add-list {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: 20px;
+  height: auto;
+  border-radius: 0.25rem;
+}
+
+#add-list:hover {
+  background-color: var(--off-white);
+}
+
 .tasks.section.container {
   padding: 1rem;
   border-left: 1px solid var(--platinum);
   border-right: 1px solid var(--platinum);
+  flex: 2;
 }
 
 .tasks.heading.container {
@@ -103,6 +119,7 @@ hr.vertical {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  flex: 2;
 }
 
 .add-task.input.container {
@@ -239,7 +256,7 @@ label:has(input[type="checkbox"]):hover {
 
 .view-task.body.container {
   padding: 1rem;
-  overflow: scroll;
+  overflow-y: auto;
   flex: 1;
 }
 
@@ -260,4 +277,12 @@ label:has(input[type="checkbox"]):hover {
 .view-task.description:empty:not(:focus):before {
   content: attr(data-ph);
   color: var(--grey);
+}
+
+.hidden {
+  display: none;
+  padding: 0;
+  margin: 0;
+  height: 0;
+  width: 0;
 }

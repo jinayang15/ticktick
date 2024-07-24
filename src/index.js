@@ -7,11 +7,14 @@ import "./styles.css";
 
 function main() {
   const defaultList = new List("default");
+  const newList = new List("new");
   App.addList(defaultList);
+  App.addList(newList);
 
-  Display.addCategoriesSection();
-  Display.addToTasksSection();
+  Display.addToCategoriesSection("categories-section");
   Display.addToViewTaskSection();
+
+  Display.addMenuToggle();
 }
 
 main();
