@@ -1,5 +1,5 @@
 import * as App from "./app";
-import { Todo, List } from "./class";
+import { Task, List } from "./class";
 
 export function intro() {
   console.log("Welcome to To-Do List!");

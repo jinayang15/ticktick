@@ -1,11 +1,20 @@
-const _lists = [];
+import { Task, List } from "./class";
+
+const _defaultLists = [
+  new List("Today"),
+  new List("Next 7 Days"),
+  new List("All Tasks"),
+];
+const _userLists = [];
 
 export function getLists() {
-  return _lists;
+  return _userLists;
 }
-export function addList(list) {
-  _lists.push(list);
+export function addList(...lists) {
+  for (const list of lists) {
+    _userLists.push(list);
+  }
 }
 export function deleteList(index) {
-  _lists.splice(index, 1);
+  _userLists.splice(index, 1);
 }

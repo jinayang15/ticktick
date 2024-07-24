@@ -1,4 +1,4 @@
-export class Todo {
+export class Task {
   constructor(
     name,
     desc = "",
@@ -67,9 +67,9 @@ export class Todo {
 }
 
 export class List {
-  constructor(name, todos = []) {
+  constructor(name, tasks = []) {
     this.name = name;
-    this.todos = todos;
+    this.tasks = tasks;
   }
   get name() {
     return this._name;
@@ -77,16 +77,16 @@ export class List {
   set name(name) {
     this._name = name;
   }
-  get todos() {
-    return this._todos;
+  get tasks() {
+    return this._tasks;
   }
-  set todos(todos) {
-    this._todos = todos;
+  set tasks(tasks) {
+    this._tasks = tasks;
   }
-  addTodo(todo) {
-    this._todos.push(todo);
+  addTask(task) {
+    this._tasks.push(task);
   }
-  deleteTodo(index) {
-    this._todos.splice(index, 1);
+  deleteTask(index) {
+    this._tasks.splice(index, 1);
   }
 }

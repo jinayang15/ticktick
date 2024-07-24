@@ -274,7 +274,13 @@ label:has(input[type="checkbox"]):hover {
   overflow: visible;
 }
 
+/* trick for getting faded out text in "textbox" */
 .view-task.description:empty:not(:focus):before {
+  content: attr(data-ph);
+  color: var(--grey);
+}
+
+.view-task.name:empty:not(:focus):before {
   content: attr(data-ph);
   color: var(--grey);
 }
