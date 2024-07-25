@@ -2,12 +2,10 @@
 
 ### Clone of TickTick To Do List App
 
-##### Goal: Replicate TickTick's To Do feature and eventually add in the calendar feature (because I hate subscriptions)
+### Goal: Replicate TickTick's To Do feature and eventually add in the calendar feature (because I hate subscriptions)
 
-##### To do list (haha):
-
-_# of stars out of 5 = perceived difficulty_
-
+#### To do list (haha):
+###### _# of stars out of 5 = perceived difficulty_
 - [x] Develop a fully working console version of a to-do list app
 - [x] Add in UI elements
 - [ ] Rig everything up with JS
