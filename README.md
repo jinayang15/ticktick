@@ -1,10 +1,10 @@
-# to-do-or-not-to-do
+# TickTick
 
-To do/Not To Do List app
+### Clone of TickTick To Do List App
 
-Goal: Replicate TickTick's To-do feature and eventually add in the calendar feature (because I hate subscriptions)
+###### Goal: Replicate TickTick's To Do feature and eventually add in the calendar feature (because I hate subscriptions)
 
-To do list (haha):
+###### To do list (haha):
 
 _# of stars out of 5 = perceived difficulty_
 
@@ -21,7 +21,6 @@ _# of stars out of 5 = perceived difficulty_
   - [ ] UI Touchups `*`
   - [ ] Sort alphabetically/by date/priority `**`
 
-Notes:
-
+###### Notes:
 - Doing the console version was kind of unnecessary this time
 - Why did the UI take me so long
