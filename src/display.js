@@ -127,13 +127,14 @@ export function addToTasksSection(list = App.getLists()[0]) {
 }
 
 function openTaskOnClick(task) {
-  console.log(task);
   const taskContainer = createTask(task);
   taskContainer.addEventListener("click", () => {
     clearSection("view-task-section");
-    console.log(task);
     addToViewTaskSection(task);
   });
+  taskContainer.addEventListener("mouseover", () => {
+    taskContainer
+  })
   return taskContainer;
 }
 
@@ -207,11 +208,13 @@ function createTask(task) {
 
   const taskCheckboxLabel = document.createElement("label");
   const taskCheckbox = document.createElement("input");
+  const taskCheckmark = document.createElement("span");
 
   taskCheckbox.classList.add("task", "checkbox");
   taskCheckbox.type = "checkbox";
   taskCheckbox.checked = task.complete;
-  taskCheckboxLabel.appendChild(taskCheckbox);
+  taskCheckmark.classList.add("checkmark");
+  taskCheckboxLabel.append(taskCheckbox, taskCheckmark);
 
   const taskDetailsContainer = document.createElement("div");
   taskDetailsContainer.classList.add("task-details", "container");
@@ -230,7 +233,6 @@ function createTask(task) {
 }
 
 export function addToViewTaskSection(task) {
-  console.log(task);
   const viewTaskSection = document.getElementById("view-task-section");
   const horizontalSeparator = document.createElement("hr");
   horizontalSeparator.classList.add("horizontal", "view-task", "separator");
@@ -247,10 +249,11 @@ function createViewTaskHeader(dueDate) {
 
   const checkboxLabel = document.createElement("label");
   const checkbox = document.createElement("input");
+  const checkmark = document.createElement("span");
   checkbox.classList.add("view-task", "checkbox");
   checkbox.type = "checkbox";
-
-  checkboxLabel.appendChild(checkbox);
+  checkmark.classList.add("checkmark");
+  checkboxLabel.append(checkbox, checkmark);
 
   const verticalSeparator = document.createElement("hr");
   verticalSeparator.classList.add("vertical", "view-task", "separator");

@@ -59,7 +59,6 @@ hr.vertical {
   align-items: center;
   column-gap: 0.5rem;
   padding: 0.5rem;
-  margin: 4px 0;
   border-radius: 6px;
 }
 
@@ -190,6 +189,7 @@ input[type="checkbox"] {
 }
 
 label:has(input[type="checkbox"]) {
+  position: relative;
   width: 18px;
   height: 18px;
   border: 1.5px solid var(--grey);
@@ -199,6 +199,42 @@ label:has(input[type="checkbox"]) {
 
 label:has(input[type="checkbox"]):hover {
   background-color: var(--platinum);
+}
+
+label:has(input[type="checkbox"]:checked) {
+  background-color: var(--platinum);
+  border-color: var(--platinum);
+}
+
+label:has(input[type="checkbox"]:checked):hover {
+  background-color: var(--grey);
+  border-color: var(--grey);
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  width: 6px;
+  height: 11px;
+  border: solid var(--white);
+  border-width: 0px 2px 2px 0px;
+  -webkit-transform: translate(-50%, -50%) rotate(45deg);
+  -ms-transform: translate(-50%, -50%) rotate(45deg);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+label input:checked ~ .checkmark {
+  display: block;
 }
 
 .task.due-date {
