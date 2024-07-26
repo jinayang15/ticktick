@@ -18,6 +18,7 @@
   - [ ] Lists for today, next 7 days, and all tasks `**`
   - [ ] UI Touchups `*`
   - [ ] Sort alphabetically/by date/priority `**`
+  - [ ] Allow tasks and lists to be draggable `**`
 
 ##### Notes:
 - Doing the console version was kind of unnecessary this time
