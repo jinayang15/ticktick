@@ -21,10 +21,8 @@ function main() {
   );
   console.log(defaultList.tasks[0].printDetailed());
 
-  Display.addToCategoriesSection();
-  Display.addToTasksSection();
-
-  Display.addMenuToggle();
+  Display.initCategoriesSection();
+  Display.initTasksSection();
 }
 
 main();

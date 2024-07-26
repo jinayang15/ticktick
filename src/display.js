@@ -19,7 +19,7 @@ export function clearSection(id) {
   section.textContent = "";
 }
 
-export function addToCategoriesSection() {
+export function initCategoriesSection() {
   const categoriesSectionContainer =
     document.getElementById("categories-section");
   const hrSeparator = document.createElement("hr");
@@ -67,19 +67,9 @@ function createGroupByList() {
   groupByListHeading.appendChild(addListIcon);
   groupByListContainer.appendChild(groupByListHeading);
   for (const list of App.getLists()) {
-    groupByListContainer.appendChild(openListOnClick(list));
+    groupByListContainer.appendChild(createListClickable(list));
   }
   return groupByListContainer;
-}
-
-function openListOnClick(list) {
-  const listContainer = createGroupByItem(list.name, "list_icon", "list");
-  listContainer.addEventListener("click", () => {
-    clearSection("tasks-section");
-    clearSection("view-task-section");
-    addToTasksSection(list);
-  });
-  return listContainer;
 }
 
 function createGroupByOther() {
@@ -110,7 +100,7 @@ function createGroupByItem(label, imgName, type) {
   return item;
 }
 
-export function addToTasksSection(list = App.getLists()[0]) {
+export function initTasksSection(list = App.getLists()[0]) {
   const tasksSectionContainer = document.getElementById("tasks-section");
 
   const taskSeparator = document.createElement("hr");
@@ -121,21 +111,11 @@ export function addToTasksSection(list = App.getLists()[0]) {
     createAddTaskBar()
   );
   for (const task of list.tasks) {
-    tasksSectionContainer.appendChild(openTaskOnClick(task));
+    tasksSectionContainer.appendChild(createTaskClickable(task));
     tasksSectionContainer.appendChild(taskSeparator.cloneNode(true));
   }
-}
 
-function openTaskOnClick(task) {
-  const taskContainer = createTask(task);
-  taskContainer.addEventListener("click", () => {
-    clearSection("view-task-section");
-    addToViewTaskSection(task);
-  });
-  taskContainer.addEventListener("mouseover", () => {
-    taskContainer
-  })
-  return taskContainer;
+  addMenuToggle();
 }
 
 function createTaskSectionHeading(listName = "Default") {
@@ -232,7 +212,7 @@ function createTask(task) {
   return taskContainer;
 }
 
-export function addToViewTaskSection(task) {
+export function initViewTaskSection(task) {
   const viewTaskSection = document.getElementById("view-task-section");
   const horizontalSeparator = document.createElement("hr");
   horizontalSeparator.classList.add("horizontal", "view-task", "separator");
@@ -321,7 +301,29 @@ export function addMenuToggle() {
       categoriesSection.classList.add("hidden");
     } else {
       menuToggle.src = images["menu_collapse"];
-      addToCategoriesSection();
+      initCategoriesSection();
     }
   });
+}
+
+function createListClickable(list) {
+  const listContainer = createGroupByItem(list.name, "list_icon", "list");
+  listContainer.addEventListener("click", () => {
+    clearSection("tasks-section");
+    clearSection("view-task-section");
+    initTasksSection(list);
+  });
+  return listContainer;
+}
+
+function createTaskClickable(task) {
+  const taskContainer = createTask(task);
+  taskContainer.addEventListener("click", () => {
+    clearSection("view-task-section");
+    initViewTaskSection(task);
+  });
+  taskContainer.addEventListener("mouseover", () => {
+    taskContainer;
+  });
+  return taskContainer;
 }
