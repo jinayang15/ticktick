@@ -1,9 +1,9 @@
 import { Task, List } from "./class";
 
 const _defaultLists = [
-  new List("Today"),
-  new List("Next 7 Days"),
-  new List("All Tasks"),
+  new List(-1, "Today"),
+  new List(-2, "Next 7 Days"),
+  new List(-3, "All Tasks"),
 ];
 const _userLists = [];
 

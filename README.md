@@ -9,10 +9,10 @@
 - [x] Develop a fully working console version of a to-do list app
 - [x] Add in UI elements
 - [ ] Rig everything up with JS
-  - [ ] Refactor the addToSection functions to make more sense... `*`
+  - [x] Refactor the addToSection functions to make more sense... `*`
   - [ ] Add priority and dates in properly `**`
-  - [ ] Attach data attributes to elements corresponding to the list/task in memory for easy access `*`
-  - [ ] Allow for tasks to be edited `**`
+  - [x] Attach data attributes to elements corresponding to the list/task in memory for easy access `*`
+  - [x] Allow for tasks to be edited `**`
   - [ ] Allow for lists to be added/deleted `***`
   - [ ] Allow for tasks to be added/deleted `****`
   - [ ] Lists for today, next 7 days, and all tasks `**`

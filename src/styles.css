@@ -237,6 +237,11 @@ label input:checked ~ .checkmark {
   display: block;
 }
 
+.task.name:empty:not(:focus):before {
+  content: attr(data-ph);
+  color: var(--grey);
+}
+
 .task.due-date {
   text-align: right;
   margin-right: -0.75rem;

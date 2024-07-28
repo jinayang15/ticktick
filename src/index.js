@@ -6,11 +6,12 @@ import "./reset.css";
 import "./styles.css";
 
 function main() {
-  const defaultList = new List("Default");
-  const newList = new List("new");
+  const defaultList = new List(0, "Default");
+  const newList = new List(1, "new");
   App.addList(defaultList, newList);
   defaultList.addTask(
     new Task(
+      0,
       "boop",
       "dfsfsdfsfsdfserwerwe",
       new Date(2024, 1, 20),

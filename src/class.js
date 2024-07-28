@@ -1,5 +1,6 @@
 export class Task {
   constructor(
+    idx,
     name,
     desc = "",
     dueDate,
@@ -8,6 +9,7 @@ export class Task {
     complete,
     tags = []
   ) {
+    this.idx = idx;
     this.name = name;
     this.desc = desc;
     this.dueDate = dueDate;
@@ -15,6 +17,12 @@ export class Task {
     this.priority = priority;
     this.complete = complete;
     this.tags = tags;
+  }
+  get idx() {
+    return this._idx;
+  }
+  set idx(idx) {
+    this._idx = idx;
   }
   get name() {
     return this._name;
@@ -67,9 +75,16 @@ export class Task {
 }
 
 export class List {
-  constructor(name, tasks = []) {
+  constructor(idx, name, tasks = []) {
+    this.idx = idx;
     this.name = name;
     this.tasks = tasks;
+  }
+  get idx() {
+    return this._idx;
+  }
+  set idx(idx) {
+    this._idx = idx;
   }
   get name() {
     return this._name;

@@ -66,8 +66,10 @@ function createGroupByList() {
 
   groupByListHeading.appendChild(addListIcon);
   groupByListContainer.appendChild(groupByListHeading);
-  for (const list of App.getLists()) {
-    groupByListContainer.appendChild(createListClickable(list));
+  const lists = App.getLists();
+  for (let i = 0; i < lists.length; i++) {
+    lists[i].idx = i;
+    groupByListContainer.appendChild(createListClickable(lists[i]));
   }
   return groupByListContainer;
 }
@@ -83,9 +85,10 @@ function createGroupByOther() {
   return groupByOtherContainer;
 }
 
-function createGroupByItem(label, imgName, type) {
+function createGroupByItem(label, imgName, type, idx = -1) {
   const item = document.createElement("div");
   item.classList.add("group-by", "item", type);
+  item.dataset.list = idx;
 
   const img = document.createElement("img");
   img.classList.add("group-by", "svg", type);
@@ -100,8 +103,24 @@ function createGroupByItem(label, imgName, type) {
   return item;
 }
 
+function createListClickable(list) {
+  const listContainer = createGroupByItem(
+    list.name,
+    "list_icon",
+    "list",
+    list.idx
+  );
+  listContainer.addEventListener("click", () => {
+    clearSection("tasks-section");
+    clearSection("view-task-section");
+    initTasksSection(list);
+  });
+  return listContainer;
+}
+
 export function initTasksSection(list = App.getLists()[0]) {
   const tasksSectionContainer = document.getElementById("tasks-section");
+  tasksSectionContainer.dataset.list = list.idx;
 
   const taskSeparator = document.createElement("hr");
   taskSeparator.classList.add("horizontal", "task", "separator");
@@ -110,12 +129,28 @@ export function initTasksSection(list = App.getLists()[0]) {
     createTaskSectionHeading(list.name),
     createAddTaskBar()
   );
-  for (const task of list.tasks) {
-    tasksSectionContainer.appendChild(createTaskClickable(task));
+  for (let i = 0; i < list.tasks.length; i++) {
+    list.tasks[i].idx = i;
+    tasksSectionContainer.appendChild(createTaskClickable(list.tasks[i]));
     tasksSectionContainer.appendChild(taskSeparator.cloneNode(true));
   }
 
   addMenuToggle();
+}
+
+export function addMenuToggle() {
+  const menuToggle = document.getElementById("menu-toggle");
+  const categoriesSection = document.getElementById("categories-section");
+  menuToggle.addEventListener("click", () => {
+    if (menuToggle.src == images["menu_collapse"]) {
+      menuToggle.src = images["menu_expand"];
+      clearSection("categories-section");
+      categoriesSection.classList.add("hidden");
+    } else {
+      menuToggle.src = images["menu_collapse"];
+      initCategoriesSection();
+    }
+  });
 }
 
 function createTaskSectionHeading(listName = "Default") {
@@ -185,6 +220,7 @@ function createAddTaskBar() {
 function createTask(task) {
   const taskContainer = document.createElement("div");
   taskContainer.classList.add("task", "container");
+  taskContainer.dataset.task = task.idx;
 
   const taskCheckboxLabel = document.createElement("label");
   const taskCheckbox = document.createElement("input");
@@ -202,6 +238,7 @@ function createTask(task) {
   const taskName = document.createElement("span");
   const taskDueDate = document.createElement("span");
   taskName.classList.add("task", "name");
+  taskName.dataset.ph = "No Title";
   taskDueDate.classList.add("task", "due-date");
   taskName.textContent = task.name;
   taskDueDate.textContent = task.dueDate.toDateString();
@@ -212,8 +249,18 @@ function createTask(task) {
   return taskContainer;
 }
 
+function createTaskClickable(task) {
+  const taskContainer = createTask(task);
+  taskContainer.addEventListener("click", () => {
+    clearSection("view-task-section");
+    initViewTaskSection(task);
+  });
+  return taskContainer;
+}
+
 export function initViewTaskSection(task) {
   const viewTaskSection = document.getElementById("view-task-section");
+  viewTaskSection.dataset.task = task.idx;
   const horizontalSeparator = document.createElement("hr");
   horizontalSeparator.classList.add("horizontal", "view-task", "separator");
   viewTaskSection.append(
@@ -221,6 +268,7 @@ export function initViewTaskSection(task) {
     horizontalSeparator,
     createViewTaskBody(task.name, task.desc)
   );
+  saveTaskOnEdit(viewTaskSection);
 }
 
 function createViewTaskHeader(dueDate) {
@@ -291,39 +339,29 @@ function createViewTaskBody(name = "Task Name", desc = "") {
   return viewTaskBodyContainer;
 }
 
-export function addMenuToggle() {
-  const menuToggle = document.getElementById("menu-toggle");
-  const categoriesSection = document.getElementById("categories-section");
-  menuToggle.addEventListener("click", () => {
-    if (menuToggle.src == images["menu_collapse"]) {
-      menuToggle.src = images["menu_expand"];
-      clearSection("categories-section");
-      categoriesSection.classList.add("hidden");
-    } else {
-      menuToggle.src = images["menu_collapse"];
-      initCategoriesSection();
-    }
-  });
-}
+function saveTaskOnEdit(viewTaskSection) {
+  const taskName = viewTaskSection.querySelector(".name");
+  const taskDesc = viewTaskSection.querySelector(".description");
 
-function createListClickable(list) {
-  const listContainer = createGroupByItem(list.name, "list_icon", "list");
-  listContainer.addEventListener("click", () => {
-    clearSection("tasks-section");
-    clearSection("view-task-section");
-    initTasksSection(list);
-  });
-  return listContainer;
-}
+  taskName.addEventListener("input", () => {
+    const tasksSection = document.getElementById("tasks-section");
+    const listIdx = Number(tasksSection.dataset.list);
+    const taskIdx = Number(viewTaskSection.dataset.task);
+    const clickableTaskName = tasksSection.querySelector(
+      `.task.container[data-task='${taskIdx}'] .name`
+    );
 
-function createTaskClickable(task) {
-  const taskContainer = createTask(task);
-  taskContainer.addEventListener("click", () => {
-    clearSection("view-task-section");
-    initViewTaskSection(task);
+    const lists = App.getLists();
+    lists[listIdx].tasks[taskIdx].name = taskName.textContent;
+    clickableTaskName.textContent = taskName.textContent;
   });
-  taskContainer.addEventListener("mouseover", () => {
-    taskContainer;
+
+  taskDesc.addEventListener("input", () => {
+    const tasksSection = document.getElementById("tasks-section");
+    const listIdx = Number(tasksSection.dataset.list);
+    const taskIdx = Number(viewTaskSection.dataset.task);
+    const lists = App.getLists();
+
+    lists[listIdx].tasks[taskIdx].desc = taskDesc.textContent;
   });
-  return taskContainer;
 }
