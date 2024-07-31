@@ -85,6 +85,10 @@ hr.vertical {
   text-overflow: ellipsis;
 }
 
+.group-by.item.active {
+  background-color: var(--light-blue);
+}
+
 .add-list.add-icon {
   position: absolute;
   top: 50%;

@@ -123,6 +123,8 @@ function createListClickable(list) {
     clearSection("tasks-section");
     clearSection("view-task-section");
     initTasksSection(list);
+    disableActiveList();
+    listContainer.classList.add("active");
   });
   return listContainer;
 }
@@ -134,6 +136,13 @@ function displayNewListInCategories() {
   const lists = App.getLists();
   const newList = lists[lists.length - 1];
   groupByListContainer.appendChild(createListClickable(newList));
+}
+
+function disableActiveList() {
+  const currentList = document.querySelectorAll(".group-by.active");
+  currentList.forEach((element) => {
+    element.classList.remove("active");
+  });
 }
 
 export function initTasksSection(list) {
