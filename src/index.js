@@ -18,6 +18,15 @@ function main() {
       false,
       0,
       true
+    ),
+    new Task(
+      0,
+      "hallohallo",
+      "duuuduuuduu",
+      new Date(2024, 5, 13),
+      false,
+      0,
+      false
     )
   );
   console.log(defaultList.tasks[0].printDetailed());

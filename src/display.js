@@ -220,18 +220,28 @@ function createAddTaskBar() {
   addTaskOptionsContainer.classList.add("add-task", "svgs", "container");
 
   const addTaskDate = document.createElement("img");
-  addTaskDate.classList.add("add-task", "svg");
+  addTaskDate.classList.add("add-task", "svg", "hidden");
   addTaskDate.src = images["calendar_options"];
   addTaskDate.alt = "Calendar Options";
 
   const addTaskProperties = document.createElement("img");
-  addTaskProperties.classList.add("add-task", "svg");
+  addTaskProperties.classList.add("add-task", "svg", "hidden");
   addTaskProperties.src = images["arrow_down"];
   addTaskProperties.alt = "Other Options";
 
   addTaskOptionsContainer.append(addTaskDate, addTaskProperties);
 
   addTaskBarContainer.append(addTaskBar, addTaskOptionsContainer);
+
+  addTaskBar.addEventListener("focus", () => {
+    addTaskDate.classList.toggle("hidden");
+    addTaskProperties.classList.toggle("hidden");
+  });
+
+  addTaskBar.addEventListener("focusout", () => {
+    addTaskDate.classList.toggle("hidden");
+    addTaskProperties.classList.toggle("hidden");
+  });
 
   return addTaskBarContainer;
 }
@@ -273,20 +283,43 @@ function createTaskClickable(task) {
   taskContainer.addEventListener("click", () => {
     clearSection("view-task-section");
     initViewTaskSection(task);
+    disableActiveTask();
+    taskContainer.classList.add("active");
+    hideTaskSeparator(taskContainer.dataset.task);
   });
   taskContainer.addEventListener("mouseover", () => {
-    const taskSeparator = document.querySelector(
-      `.task.separator[data-task='${taskContainer.dataset.task}']`
-    );
-    taskSeparator.classList.add("hidden");
+    if (!taskContainer.classList.contains("active")) {
+      hideTaskSeparator(taskContainer.dataset.task);
+    }
   });
   taskContainer.addEventListener("mouseout", () => {
-    const taskSeparator = document.querySelector(
-      `.task.separator[data-task='${taskContainer.dataset.task}']`
-    );
-    taskSeparator.classList.remove("hidden");
+    if (!taskContainer.classList.contains("active")) {
+      showTaskSeparator(taskContainer.dataset.task);
+    }
   });
   return taskContainer;
+}
+
+function showTaskSeparator(taskIdx) {
+  const taskSeparator = document.querySelector(
+    `.task.separator[data-task='${taskIdx}']`
+  );
+  taskSeparator.classList.remove("hidden");
+}
+
+function hideTaskSeparator(taskIdx) {
+  const taskSeparator = document.querySelector(
+    `.task.separator[data-task='${taskIdx}']`
+  );
+  taskSeparator.classList.add("hidden");
+}
+
+function disableActiveTask() {
+  const currentTasks = document.querySelectorAll(".task.container.active");
+  currentTasks.forEach((element) => {
+    element.classList.remove("active");
+    showTaskSeparator(element.dataset.task);
+  });
 }
 
 export function initViewTaskSection(task) {

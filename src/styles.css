@@ -261,7 +261,8 @@ label input:checked ~ .checkmark {
   color: var(--bright-blue);
 }
 
-.task.container:hover {
+.task.container:hover,
+.task.container.active {
   background-color: var(--light-blue);
 }
 
@@ -270,6 +271,11 @@ label input:checked ~ .checkmark {
   margin-left: calc(1rem + 26px);
   margin-right: 4px;
   text-align: right;
+}
+
+.horizontal.task.separator.hidden {
+  display: block;
+  border-color: transparent;
 }
 
 .view-task.header.container {

@@ -98,8 +98,10 @@ export class List {
   set tasks(tasks) {
     this._tasks = tasks;
   }
-  addTask(task) {
-    this._tasks.push(task);
+  addTask(...tasks) {
+    for (const task of tasks) {
+      this._tasks.push(task);
+    }
   }
   deleteTask(index) {
     this._tasks.splice(index, 1);
