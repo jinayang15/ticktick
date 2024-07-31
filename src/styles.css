@@ -266,6 +266,7 @@ label input:checked ~ .checkmark {
 }
 
 .horizontal.task.separator {
+  border-color: var(--off-white);
   margin-left: calc(1rem + 26px);
   margin-right: 4px;
   text-align: right;
@@ -336,14 +337,6 @@ label input:checked ~ .checkmark {
 .view-task.name:empty:not(:focus):before {
   content: attr(data-ph);
   color: var(--grey);
-}
-
-.hidden {
-  display: none;
-  padding: 0;
-  margin: 0;
-  height: 0;
-  width: 0;
 }
 
 .add-list.modal {
@@ -424,4 +417,12 @@ label input:checked ~ .checkmark {
 dialog::backdrop {
   background-color: var(--grey);
   opacity: 0.25;
+}
+
+.hidden {
+  display: none;
+  padding: 0;
+  margin: 0;
+  height: 0;
+  width: 0;
 }

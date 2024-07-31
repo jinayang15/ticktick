@@ -150,6 +150,7 @@ export function initTasksSection(list) {
   for (let i = 0; i < list.tasks.length; i++) {
     list.tasks[i].idx = i;
     tasksSectionContainer.appendChild(createTaskClickable(list.tasks[i]));
+    taskSeparator.dataset.task = i;
     tasksSectionContainer.appendChild(taskSeparator.cloneNode(true));
   }
 
@@ -272,6 +273,18 @@ function createTaskClickable(task) {
   taskContainer.addEventListener("click", () => {
     clearSection("view-task-section");
     initViewTaskSection(task);
+  });
+  taskContainer.addEventListener("mouseover", () => {
+    const taskSeparator = document.querySelector(
+      `.task.separator[data-task='${taskContainer.dataset.task}']`
+    );
+    taskSeparator.classList.add("hidden");
+  });
+  taskContainer.addEventListener("mouseout", () => {
+    const taskSeparator = document.querySelector(
+      `.task.separator[data-task='${taskContainer.dataset.task}']`
+    );
+    taskSeparator.classList.remove("hidden");
   });
   return taskContainer;
 }
