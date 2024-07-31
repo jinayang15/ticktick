@@ -2,6 +2,7 @@
   --font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   --white: #ffffff;
+  --black: #000000;
   --off-white: #f0f0f0;
   --platinum: #e2e2e2;
   --silver: #b3b3b3;
@@ -49,10 +50,13 @@ hr.vertical {
   padding: 1rem;
   padding-right: 0.5rem;
   flex: 1;
+  overflow-y: auto;
+  min-width: 0;
 }
 
 .group-by.item,
 .group-by.heading {
+  min-width: 0;
   position: relative;
   display: grid;
   grid-template-columns: max-content 1fr;
@@ -60,6 +64,7 @@ hr.vertical {
   column-gap: 0.5rem;
   padding: 0.5rem;
   border-radius: 6px;
+  overflow-x: hidden;
 }
 
 .group-by.item:hover {
@@ -76,7 +81,11 @@ hr.vertical {
   height: 20px;
 }
 
-#add-list {
+.group-by.list.text {
+  text-overflow: ellipsis;
+}
+
+.add-list.add-icon {
   position: absolute;
   top: 50%;
   right: 0;
@@ -86,7 +95,7 @@ hr.vertical {
   border-radius: 0.25rem;
 }
 
-#add-list:hover {
+.add-list.add-icon:hover {
   background-color: var(--off-white);
 }
 
@@ -95,6 +104,7 @@ hr.vertical {
   border-left: 1px solid var(--platinum);
   border-right: 1px solid var(--platinum);
   flex: 2;
+  min-width: 0;
 }
 
 .tasks.heading.container {
@@ -112,6 +122,8 @@ hr.vertical {
   margin-right: auto;
   font-size: 20px;
   font-weight: 600;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
 }
 
 .view-task.section.container {
@@ -332,4 +344,84 @@ label input:checked ~ .checkmark {
   margin: 0;
   height: 0;
   width: 0;
+}
+
+.add-list.modal {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  border: 0;
+  z-index: 999;
+  width: max-content;
+  border-radius: 0.5rem;
+  outline: 0;
+  box-shadow: 0 0 5px -1px var(--grey);
+  transform: translate(-50%, -50%);
+  min-width: 225px;
+  max-width: 450px;
+  width: 35%;
+}
+
+.add-list.form.heading {
+  text-align: center;
+}
+
+.add-list.add-name {
+  margin: 0.5rem 0;
+  border: 1px solid var(--grey);
+  border-radius: 0.25rem;
+  font-weight: 500;
+  outline: 0;
+  width: 100%;
+}
+
+.add-list.add-name:focus {
+  border: 1px solid var(--bright-blue);
+}
+
+.add-list.add-name::placeholder {
+  color: var(--silver);
+}
+
+.add-list.buttons-container {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.add-list.button {
+  flex: 1;
+  border-radius: 0.25rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.add-list.cancel {
+  border: 1px solid var(--silver);
+  background: var(--white);
+  font-weight: 400;
+}
+
+.add-list.save {
+  border: 1px solid var(--bright-blue);
+  background: var(--bright-blue);
+  color: var(--white);
+}
+
+.add-list.cancel:active {
+  background-color: var(--off-white);
+}
+
+.add-list.save:disabled {
+  color: var(--silver);
+  filter: hue-rotate(7deg) brightness(1.6) contrast(80%);
+}
+
+.add-list.save:active {
+  border-color: var(--platinum);
+  background-color: var(--platinum);
+}
+
+dialog::backdrop {
+  background-color: var(--grey);
+  opacity: 0.25;
 }

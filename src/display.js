@@ -1,3 +1,5 @@
+import { add } from "date-fns";
+import { Task, List } from "./class";
 import * as App from "./app";
 
 const images = importAllAssets(
@@ -57,14 +59,21 @@ function createGroupByList() {
   const groupByListContainer = document.createElement("div");
   const groupByListHeading = document.createElement("h4");
   const addListIcon = document.createElement("img");
+  const addListModal = createAddListModal();
+
+  groupByListContainer.classList.add("group-by", "list", "container");
 
   groupByListHeading.textContent = "Lists";
   groupByListHeading.classList.add("group-by", "list", "heading");
 
-  addListIcon.id = "add-list";
+  addListIcon.classList.add("add-list", "add-icon");
   addListIcon.src = images["add_list"];
+  addListIcon.addEventListener("click", () => {
+    addListModal.showModal();
+  });
 
   groupByListHeading.appendChild(addListIcon);
+  groupByListHeading.appendChild(addListModal);
   groupByListContainer.appendChild(groupByListHeading);
   const lists = App.getLists();
   for (let i = 0; i < lists.length; i++) {
@@ -118,7 +127,16 @@ function createListClickable(list) {
   return listContainer;
 }
 
-export function initTasksSection(list = App.getLists()[0]) {
+function displayNewListInCategories() {
+  const groupByListContainer = document
+    .getElementById("categories-section")
+    .querySelector(".group-by.list.container");
+  const lists = App.getLists();
+  const newList = lists[lists.length - 1];
+  groupByListContainer.appendChild(createListClickable(newList));
+}
+
+export function initTasksSection(list) {
   const tasksSectionContainer = document.getElementById("tasks-section");
   tasksSectionContainer.dataset.list = list.idx;
 
@@ -364,4 +382,69 @@ function saveTaskOnEdit(viewTaskSection) {
 
     lists[listIdx].tasks[taskIdx].desc = taskDesc.textContent;
   });
+}
+
+function createAddListModal() {
+  const addListModal = document.createElement("dialog");
+  const addListForm = document.createElement("form");
+  const formHeading = document.createElement("h4");
+  const listNameInput = document.createElement("input");
+  const buttonsContainer = document.createElement("div");
+  const cancelButton = document.createElement("button");
+  const saveButton = document.createElement("button");
+
+  addListModal.classList.add("add-list", "modal");
+
+  addListForm.classList.add("add-list", "form");
+
+  formHeading.classList.add("add-list", "form", "heading");
+  formHeading.textContent = "Add List";
+
+  listNameInput.classList.add("add-list", "add-name");
+  listNameInput.type = "text";
+  listNameInput.placeholder = "List Name";
+
+  buttonsContainer.classList.add("add-list", "buttons-container");
+
+  cancelButton.classList.add("add-list", "button", "cancel");
+  cancelButton.textContent = "Cancel";
+  saveButton.classList.add("add-list", "button", "save");
+  saveButton.textContent = "Save";
+  saveButton.type = "submit";
+  saveButton.setAttribute("form", "add-list-form");
+  saveButton.disabled = true;
+
+  cancelButton.addEventListener("click", () => {
+    listNameInput.value = "";
+    saveButton.disabled = true;
+    addListModal.close();
+  });
+
+  listNameInput.addEventListener("input", () => {
+    if (listNameInput.value.trim() != "") {
+      saveButton.disabled = false;
+    } else {
+      saveButton.disabled = true;
+    }
+  });
+
+  saveButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    const listName = listNameInput.value;
+    App.addList(new List(App.getLists().length, listName));
+    displayNewListInCategories();
+
+    listNameInput.value = "";
+    saveButton.disabled = true;
+    addListModal.close();
+  });
+
+  buttonsContainer.append(cancelButton, saveButton);
+
+  addListForm.appendChild(formHeading);
+  addListForm.appendChild(listNameInput);
+  addListModal.appendChild(addListForm);
+  addListModal.appendChild(buttonsContainer);
+
+  return addListModal;
 }
