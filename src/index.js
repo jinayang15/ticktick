@@ -20,7 +20,7 @@ function main() {
       true
     ),
     new Task(
-      0,
+      1,
       "hallohallo",
       "duuuduuuduu",
       new Date(2024, 5, 13),
@@ -32,7 +32,6 @@ function main() {
   console.log(defaultList.tasks[0].printDetailed());
 
   Display.initCategoriesSection();
-  Display.initTasksSection();
 }
 
 main();

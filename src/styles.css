@@ -62,7 +62,8 @@ hr.vertical {
   grid-template-columns: max-content 1fr;
   align-items: center;
   column-gap: 0.5rem;
-  padding: 0.5rem;
+  padding: 0.4rem 0.5rem;
+  margin-bottom: 0.25rem;
   border-radius: 6px;
   overflow-x: hidden;
 }
@@ -82,7 +83,9 @@ hr.vertical {
 }
 
 .group-by.list.text {
+  overflow-x: hidden;
   text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .group-by.item.active {
@@ -122,12 +125,24 @@ hr.vertical {
   height: auto;
 }
 
+.tasks.heading.svg:hover {
+  background-color: var(--off-white);
+  border-radius: 6px;
+}
+
 .tasks.heading.text {
   margin-right: auto;
   font-size: 20px;
   font-weight: 600;
   text-overflow: ellipsis;
   overflow-x: hidden;
+}
+
+.task.name {
+  overflow-x: hidden;
+  min-width: 0;
+  text-overflow: ellipsis;
+  max-width: 50%;
 }
 
 .view-task.section.container {
@@ -190,6 +205,7 @@ hr.vertical {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  min-width: 0;
 }
 
 .task.svg {
@@ -211,6 +227,7 @@ label:has(input[type="checkbox"]) {
   border: 1.5px solid var(--grey);
   margin-right: auto;
   border-radius: 4px;
+  min-width: 18px;
 }
 
 label:has(input[type="checkbox"]):hover {
