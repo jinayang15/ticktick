@@ -290,11 +290,11 @@ function createTask(task) {
 function createTaskClickable(task) {
   const taskContainer = createTask(task);
   taskContainer.addEventListener("click", () => {
-    clearSection("view-task-section");
-    initViewTaskSection(task);
     disableActiveTask();
     taskContainer.classList.add("active");
     hideTaskSeparator(taskContainer.dataset.task);
+    clearSection("view-task-section");
+    initViewTaskSection(task);
   });
   taskContainer.addEventListener("mouseover", () => {
     if (!taskContainer.classList.contains("active")) {
@@ -342,6 +342,7 @@ export function initViewTaskSection(task) {
     createViewTaskBody(task.name, task.desc)
   );
   saveTaskOnEdit(viewTaskSection);
+  linkCheckboxes();
 }
 
 function createViewTaskHeader(dueDate) {
@@ -502,4 +503,28 @@ function createAddListModal() {
   addListModal.appendChild(buttonsContainer);
 
   return addListModal;
+}
+
+// toggling task section checkbox also toggle view task section checkbox
+function linkCheckboxes() {
+  const tasksSection = document.getElementById("tasks-section");
+  const viewTaskSection = document.getElementById("view-task-section");
+  const taskCheckbox = tasksSection.querySelector(
+    `.container.active .checkbox`
+  );
+  const viewTaskCheckbox = viewTaskSection.querySelector(
+    ".header.container .checkbox"
+  );
+  const listIdx = Number(tasksSection.dataset.list);
+  const taskIdx = Number(viewTaskSection.dataset.task);
+
+  viewTaskCheckbox.checked = taskCheckbox.checked;
+  taskCheckbox.addEventListener("click", () => {
+    App.getLists()[listIdx].tasks[taskIdx].complete = taskCheckbox.checked;
+    viewTaskCheckbox.checked = !viewTaskCheckbox.checked;
+  });
+  viewTaskCheckbox.addEventListener("click", () => {
+    App.getLists()[listIdx].tasks[taskIdx].complete = viewTaskCheckbox.checked;
+    taskCheckbox.checked = !taskCheckbox.checked;
+  });
 }
