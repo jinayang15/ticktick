@@ -115,6 +115,7 @@ hr.vertical {
 }
 
 .tasks.heading.container {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -136,6 +137,45 @@ hr.vertical {
   font-weight: 600;
   text-overflow: ellipsis;
   overflow-x: hidden;
+}
+
+.tasks.more-dropdown {
+  position: absolute;
+  z-index: 999;
+  left: 100%;
+  top: 100%;
+  transform: translateX(-100%);
+  padding: 0.25rem;
+  background-color: var(--white);
+  border-radius: 0.25rem;
+  box-shadow: 0 0 5px -1px var(--grey);
+  width: 8rem;
+  outline: none;
+  border: none;
+}
+
+.more-dropdown.item.container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: var(--white);
+  padding: 0.25rem;
+  gap: 0.25rem;
+  border-radius: 0.25rem;
+}
+
+.more-dropdown.item.container:hover {
+  background-color: var(--off-white);
+}
+
+.more-dropdown.item.svg {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+}
+
+.more-dropdown.item.text {
+  font-size: 0.833rem;
 }
 
 .task.name {

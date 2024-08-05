@@ -205,11 +205,44 @@ function createTaskSectionHeading(listName = "Default") {
   moreButton.src = images["more_hori"];
   moreButton.alt = "More";
 
+  const moreDropdown = document.createElement("dialog");
+  moreDropdown.classList.add("tasks", "more-dropdown");
+
+  const moreDropdownItem = document.createElement("div");
+  moreDropdownItem.classList.add("more-dropdown", "item", "container");
+
+  const deleteSvg = document.createElement("img");
+  deleteSvg.classList.add("more-dropdown", "item", "svg");
+  deleteSvg.src = images["delete"];
+  deleteSvg.alt = "Delete List";
+
+  const deleteText = document.createElement("span");
+  deleteText.classList.add("more-dropdown", "item", "text");
+  deleteText.textContent = "Delete";
+
+  moreDropdownItem.append(deleteSvg, deleteText);
+
+  moreDropdown.appendChild(moreDropdownItem);
+
+  document.addEventListener("click", (e) => {
+    const clickMore = moreButton.contains(e.target);
+    const clickDropdown = moreDropdown.contains(e.target);
+
+    if (!clickMore && !clickDropdown) {
+      moreDropdown.open = false;
+    }
+  });
+
+  moreButton.addEventListener("click", () => {
+    moreDropdown.open = !moreDropdown.open;
+  });
+
   tasksHeadingContainer.append(
     menuToggle,
     tasksListName,
     sortButton,
-    moreButton
+    moreButton,
+    moreDropdown
   );
 
   return tasksHeadingContainer;
