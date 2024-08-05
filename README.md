@@ -13,7 +13,7 @@
   - [ ] Add priority and dates in properly `**`
   - [x] Attach data attributes to elements corresponding to the list/task in memory for easy access `*`
   - [x] Allow for tasks to be edited `**`
-  - [ ] Allow for lists to be added/deleted `***`
+  - [x] Allow for lists to be added/deleted `***`
   - [ ] Allow for tasks to be added/deleted `****`
   - [ ] Lists for today, next 7 days, and all tasks `**`
   - [ ] UI Touchups `*`

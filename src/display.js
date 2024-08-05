@@ -35,13 +35,19 @@ export function initCategoriesSection() {
     "container"
   );
 
+  const groupByListContainer = document.createElement("div");
+  groupByListContainer.classList.add("group-by", "list", "container");
+  groupByListContainer.id = "group-by-list";
+
   categoriesSectionContainer.append(
     createGroupByPeriod(),
     hrSeparator,
-    createGroupByList(),
+    groupByListContainer,
     hrSeparator.cloneNode(true),
     createGroupByOther()
   );
+
+  addToGroupByList();
 }
 
 function createGroupByPeriod() {
@@ -55,13 +61,11 @@ function createGroupByPeriod() {
   return groupByPeriodContainer;
 }
 
-function createGroupByList() {
-  const groupByListContainer = document.createElement("div");
+function addToGroupByList() {
+  const groupByListContainer = document.getElementById("group-by-list");
   const groupByListHeading = document.createElement("h4");
   const addListIcon = document.createElement("img");
   const addListModal = createAddListModal();
-
-  groupByListContainer.classList.add("group-by", "list", "container");
 
   groupByListHeading.textContent = "Lists";
   groupByListHeading.classList.add("group-by", "list", "heading");
@@ -80,15 +84,14 @@ function createGroupByList() {
     lists[i].idx = i;
     groupByListContainer.appendChild(createListClickable(lists[i]));
   }
-  return groupByListContainer;
 }
 
 function createGroupByOther() {
   const groupByOtherContainer = document.createElement("div");
   groupByOtherContainer.classList.add("group-by", "other", "container");
   groupByOtherContainer.append(
-    createGroupByItem("Completed", "checkbox_checked", "other"),
-    createGroupByItem("Trash", "delete", "other")
+    createGroupByItem("Completed", "checkbox_checked", "other")
+    // createGroupByItem("Trash", "delete", "other")
   );
 
   return groupByOtherContainer;
@@ -208,21 +211,26 @@ function createTaskSectionHeading(listName = "Default") {
   const moreDropdown = document.createElement("dialog");
   moreDropdown.classList.add("tasks", "more-dropdown");
 
-  const moreDropdownItem = document.createElement("div");
-  moreDropdownItem.classList.add("more-dropdown", "item", "container");
+  const moreDropdownDelete = document.createElement("div");
+  moreDropdownDelete.classList.add(
+    "more-dropdown",
+    "item",
+    "container",
+    "delete"
+  );
 
   const deleteSvg = document.createElement("img");
-  deleteSvg.classList.add("more-dropdown", "item", "svg");
+  deleteSvg.classList.add("more-dropdown", "item", "svg", "delete");
   deleteSvg.src = images["delete"];
   deleteSvg.alt = "Delete List";
 
   const deleteText = document.createElement("span");
-  deleteText.classList.add("more-dropdown", "item", "text");
+  deleteText.classList.add("more-dropdown", "item", "text", "delete");
   deleteText.textContent = "Delete";
 
-  moreDropdownItem.append(deleteSvg, deleteText);
+  moreDropdownDelete.append(deleteSvg, deleteText);
 
-  moreDropdown.appendChild(moreDropdownItem);
+  moreDropdown.appendChild(moreDropdownDelete);
 
   document.addEventListener("click", (e) => {
     const clickMore = moreButton.contains(e.target);
@@ -235,6 +243,11 @@ function createTaskSectionHeading(listName = "Default") {
 
   moreButton.addEventListener("click", () => {
     moreDropdown.open = !moreDropdown.open;
+  });
+
+  moreDropdownDelete.addEventListener("click", () => {
+    deleteList();
+    moreDropdown.open = false;
   });
 
   tasksHeadingContainer.append(
@@ -560,4 +573,12 @@ function linkCheckboxes() {
     App.getLists()[listIdx].tasks[taskIdx].complete = viewTaskCheckbox.checked;
     taskCheckbox.checked = !taskCheckbox.checked;
   });
+}
+
+function deleteList() {
+  const listIdx = Number(document.getElementById("tasks-section").dataset.list);
+  App.deleteList(listIdx);
+  clearSection("tasks-section");
+  clearSection("group-by-list");
+  addToGroupByList();
 }
