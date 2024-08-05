@@ -19,6 +19,7 @@
   - [ ] UI Touchups `*`
   - [ ] Sort alphabetically/by date/priority `**`
   - [ ] Allow tasks and lists to be draggable `**`
+  - [ ] Reorganize code so that display controller doesn't control everything
 
 ##### Notes:
 - Doing the console version was kind of unnecessary this time
