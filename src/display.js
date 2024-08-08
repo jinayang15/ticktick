@@ -294,6 +294,10 @@ function createAddTaskBar() {
   addTaskDateInput.setAttribute("type", "datetime-local");
   addTaskDateInput.classList.add("add-task", "date-picker");
 
+  let now = new Date();
+  now.setUTCHours(0, 0, 0);
+  addTaskDateInput.value = now.toISOString().slice(0, 16);
+
   const addTaskDate = document.createElement("img");
   addTaskDate.classList.add("add-task", "svg", "date");
   addTaskDate.src = images["calendar_options_default"];
