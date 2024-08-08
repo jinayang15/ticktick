@@ -30,7 +30,7 @@
           </div>
         </div>
         <hr class="horizontal categories separator" />
-        <div class="group-by list container">
+        <div class="group-by list container" id="group-by-list">
           <h4 class="group-by list heading">
             Lists<img
               class="add-list add-icon"
@@ -79,12 +79,6 @@
               src="http://localhost:8080/5c623fc51542a3b119b3.svg"
             /><span class="group-by text other">Completed</span>
           </div>
-          <div class="group-by item other" data-list="-1">
-            <img
-              class="group-by svg other"
-              src="http://localhost:8080/7c654f0bc84ec0171082.svg"
-            /><span class="group-by text other">Trash</span>
-          </div>
         </div>
       </div>
       <div id="tasks-section" class="tasks section container" data-list="0">
@@ -105,9 +99,12 @@
             alt="More"
           />
           <dialog class="tasks more-dropdown">
-            <div class="more-dropdown item container">
-              <img class="more-dropdown item svg" src="./assets/delete.svg" alt="Delete List"/>
-              <span class="more-dropdown item text">Delete</span>
+            <div class="more-dropdown item container delete">
+              <img
+                class="more-dropdown item svg delete"
+                src="http://localhost:8080/7c654f0bc84ec0171082.svg"
+                alt="Delete List"
+              /><span class="more-dropdown item text delete">Delete</span>
             </div>
           </dialog>
         </div>
@@ -120,11 +117,11 @@
           />
           <div class="add-task svgs container">
             <img
-              class="add-task svg hidden"
+              class="add-task svg date hidden"
               src="http://localhost:8080/99255a40ae2243497579.svg"
               alt="Calendar Options"
             /><img
-              class="add-task svg hidden"
+              class="add-task svg other hidden"
               src="http://localhost:8080/3d98e35bcafd38b718f3.svg"
               alt="Other Options"
             />
@@ -142,7 +139,7 @@
           </div>
         </div>
         <hr class="horizontal task separator" data-task="0" />
-        <div class="task container active" data-task="1">
+        <div class="task container" data-task="1">
           <label
             ><input class="task checkbox" type="checkbox" /><span
               class="checkmark"
@@ -153,45 +150,9 @@
             ><span class="task due-date">Thu Jun 13 2024</span>
           </div>
         </div>
-        <hr class="horizontal task separator hidden" data-task="1" />
+        <hr class="horizontal task separator" data-task="1" />
       </div>
-      <div
-        id="view-task-section"
-        class="view-task section container"
-        data-task="1"
-      >
-        <div class="view-task header container">
-          <label
-            ><input class="view-task checkbox" type="checkbox" /><span
-              class="checkmark"
-            ></span
-          ></label>
-          <hr class="vertical view-task separator" />
-          <span class="view-task date container"
-            ><img
-              class="view-task header svg"
-              src="http://localhost:8080/9606bfc0701d426241f7.svg"
-            /><span class="view-task due-date">Thu Jun 13 2024</span></span
-          ><img
-            class="view-task header svg"
-            src="http://localhost:8080/88e72dee00147aa92cbc.svg"
-            alt="Priority"
-          />
-        </div>
-        <hr class="horizontal view-task separator" />
-        <div class="view-task body container">
-          <h3 class="view-task name" contenteditable="true" data-ph="Task Name">
-            hallohallo
-          </h3>
-          <div
-            class="view-task description"
-            contenteditable="true"
-            data-ph="Description"
-          >
-            duuuduuuduu
-          </div>
-        </div>
-      </div>
+      <div id="view-task-section" class="view-task section container"></div>
     </div>
   </body>
 </html>

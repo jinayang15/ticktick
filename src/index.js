@@ -29,7 +29,6 @@ function main() {
       false
     )
   );
-  console.log(defaultList.tasks[0].printDetailed());
 
   Display.initCategoriesSection();
 }

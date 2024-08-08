@@ -205,10 +205,15 @@ hr.vertical {
   outline: none;
   background-color: var(--off-white);
   padding: 0.5rem;
+  padding-right: 4.5rem;
 }
 
 #add-task::placeholder {
   color: var(--grey);
+}
+
+#add-task:not(:placeholder-shown) {
+  background-color: var(--white);
 }
 
 #add-task:focus {
@@ -220,16 +225,36 @@ hr.vertical {
   display: flex;
   position: absolute;
   width: fit-content;
-  gap: 6px;
+  gap: 4px;
   padding: 0.5rem;
   top: 50%;
   right: 0;
   transform: translateY(-50%);
+  z-index: 10;
 }
 
 .add-task.svg {
-  width: 20px;
+  width: 26px;
   height: auto;
+  padding: 3px;
+  border-radius: 0.25rem;
+  z-index: 11;
+}
+
+.add-task.svg:hover {
+  background-color: var(--off-white);
+}
+
+.add-task.date.label {
+  position: relative;
+}
+
+.add-task.date-picker {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border: 0;
+  opacity: 0;
 }
 
 .task.container {

@@ -148,6 +148,14 @@ function disableActiveList() {
   });
 }
 
+function deleteList() {
+  const listIdx = Number(document.getElementById("tasks-section").dataset.list);
+  App.deleteList(listIdx);
+  clearSection("tasks-section");
+  clearSection("group-by-list");
+  addToGroupByList();
+}
+
 export function initTasksSection(list) {
   const tasksSectionContainer = document.getElementById("tasks-section");
   tasksSectionContainer.dataset.list = list.idx;
@@ -274,28 +282,53 @@ function createAddTaskBar() {
   const addTaskOptionsContainer = document.createElement("div");
   addTaskOptionsContainer.classList.add("add-task", "svgs", "container");
 
+  const addTaskDateLabel = document.createElement("label");
+  addTaskDateLabel.classList.add("add-task", "date", "label");
+
+  const addTaskDateInput = document.createElement("input");
+  addTaskDateInput.setAttribute("type", "date");
+  addTaskDateInput.classList.add("add-task", "date-picker");
+
   const addTaskDate = document.createElement("img");
-  addTaskDate.classList.add("add-task", "svg", "hidden");
+  addTaskDate.classList.add("add-task", "svg", "date", "hidden");
   addTaskDate.src = images["calendar_options"];
   addTaskDate.alt = "Calendar Options";
 
   const addTaskProperties = document.createElement("img");
-  addTaskProperties.classList.add("add-task", "svg", "hidden");
+  addTaskProperties.classList.add("add-task", "svg", "other", "hidden");
   addTaskProperties.src = images["arrow_down"];
   addTaskProperties.alt = "Other Options";
 
-  addTaskOptionsContainer.append(addTaskDate, addTaskProperties);
+  addTaskDateLabel.append(addTaskDate, addTaskDateInput);
+
+  addTaskOptionsContainer.append(addTaskDateLabel, addTaskProperties);
 
   addTaskBarContainer.append(addTaskBar, addTaskOptionsContainer);
 
+  // pressing on the icon shows the date-picker
+  addTaskDate.addEventListener("click", () => {
+    addTaskDateInput.showPicker();
+  });
+
+  addTaskBar.addEventListener("click", (e) => {
+    if (
+      e.target.contains(addTaskDate) ||
+      e.target.contains(addTaskProperties)
+    ) {
+      e.preventDefault();
+    }
+    console.log(e.target);
+  });
+
+  // toggles the icons on input focus or unfocus
   addTaskBar.addEventListener("focus", () => {
-    addTaskDate.classList.toggle("hidden");
-    addTaskProperties.classList.toggle("hidden");
+    addTaskDate.classList.remove("hidden");
+    addTaskProperties.classList.remove("hidden");
   });
 
   addTaskBar.addEventListener("focusout", () => {
-    addTaskDate.classList.toggle("hidden");
-    addTaskProperties.classList.toggle("hidden");
+    addTaskDate.classList.add("hidden");
+    addTaskProperties.classList.add("hidden");
   });
 
   return addTaskBarContainer;
@@ -573,12 +606,4 @@ function linkCheckboxes() {
     App.getLists()[listIdx].tasks[taskIdx].complete = viewTaskCheckbox.checked;
     taskCheckbox.checked = !taskCheckbox.checked;
   });
-}
-
-function deleteList() {
-  const listIdx = Number(document.getElementById("tasks-section").dataset.list);
-  App.deleteList(listIdx);
-  clearSection("tasks-section");
-  clearSection("group-by-list");
-  addToGroupByList();
 }
