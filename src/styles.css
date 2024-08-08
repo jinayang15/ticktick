@@ -216,7 +216,8 @@ hr.vertical {
   background-color: var(--white);
 }
 
-#add-task:focus {
+#add-task:focus,
+#add-task.focus {
   background-color: var(--white);
   border: 1px solid var(--bright-blue);
 }
@@ -230,7 +231,6 @@ hr.vertical {
   top: 50%;
   right: 0;
   transform: translateY(-50%);
-  z-index: 10;
 }
 
 .add-task.svg {
@@ -238,7 +238,6 @@ hr.vertical {
   height: auto;
   padding: 3px;
   border-radius: 0.25rem;
-  z-index: 11;
 }
 
 .add-task.svg:hover {

@@ -280,56 +280,81 @@ function createAddTaskBar() {
   addTaskBar.placeholder = "+ Add Task";
 
   const addTaskOptionsContainer = document.createElement("div");
-  addTaskOptionsContainer.classList.add("add-task", "svgs", "container");
+  addTaskOptionsContainer.classList.add(
+    "add-task",
+    "svgs",
+    "container",
+    "hidden"
+  );
 
   const addTaskDateLabel = document.createElement("label");
-  addTaskDateLabel.classList.add("add-task", "date", "label");
+  addTaskDateLabel.classList.add("add-task", "date", "label", "hidden");
 
   const addTaskDateInput = document.createElement("input");
-  addTaskDateInput.setAttribute("type", "date");
+  addTaskDateInput.setAttribute("type", "datetime-local");
   addTaskDateInput.classList.add("add-task", "date-picker");
 
   const addTaskDate = document.createElement("img");
-  addTaskDate.classList.add("add-task", "svg", "date", "hidden");
-  addTaskDate.src = images["calendar_options"];
+  addTaskDate.classList.add("add-task", "svg", "date");
+  addTaskDate.src = images["calendar_options_default"];
   addTaskDate.alt = "Calendar Options";
 
-  const addTaskProperties = document.createElement("img");
-  addTaskProperties.classList.add("add-task", "svg", "other", "hidden");
-  addTaskProperties.src = images["arrow_down"];
-  addTaskProperties.alt = "Other Options";
+  const addTaskPriority = document.createElement("img");
+  addTaskPriority.classList.add("add-task", "svg", "priority", "hidden");
+  addTaskPriority.src = images["priority_flag_default"];
+  addTaskPriority.alt = "Priority Options";
 
   addTaskDateLabel.append(addTaskDate, addTaskDateInput);
-
-  addTaskOptionsContainer.append(addTaskDateLabel, addTaskProperties);
-
+  addTaskOptionsContainer.append(addTaskDateLabel, addTaskPriority);
   addTaskBarContainer.append(addTaskBar, addTaskOptionsContainer);
 
   // pressing on the icon shows the date-picker
-  addTaskDate.addEventListener("click", () => {
+  addTaskDateLabel.addEventListener("mousedown", (e) => {
+    e.preventDefault();
     addTaskDateInput.showPicker();
+    addTaskDateInput.focus();
   });
 
-  addTaskBar.addEventListener("click", (e) => {
-    if (
-      e.target.contains(addTaskDate) ||
-      e.target.contains(addTaskProperties)
-    ) {
-      e.preventDefault();
-    }
-    console.log(e.target);
+  // adds pseudo-focus state on input field when date-picker is open
+  addTaskDateInput.addEventListener("focus", () => {
+    addTaskBar.classList.add("focus");
+  });
+
+  // remove pseudo-focus state on date-picker close and refocus the task bar
+  addTaskDateInput.addEventListener("blur", () => {
+    if (addTaskDateInput.value != "")
+      addTaskDate.src = images["calendar_options_selected"];
+    else addTaskDate.src = images["calendar_options_default"];
+
+    addTaskBar.classList.remove("focus");
+    addTaskBar.focus();
   });
 
   // toggles the icons on input focus or unfocus
   addTaskBar.addEventListener("focus", () => {
-    addTaskDate.classList.remove("hidden");
-    addTaskProperties.classList.remove("hidden");
+    if (addTaskOptionsContainer.classList.contains("hidden")) {
+      addTaskOptionsContainer.classList.remove("hidden");
+      addTaskDateLabel.classList.remove("hidden");
+      addTaskPriority.classList.remove("hidden");
+    }
   });
 
   addTaskBar.addEventListener("focusout", () => {
-    addTaskDate.classList.add("hidden");
-    addTaskProperties.classList.add("hidden");
+    // necessary to allow the date picker to trigger without the blur interfering
+    setTimeout(hideAddTaskBarIcons, 0);
   });
+
+  const hideAddTaskBarIcons = function () {
+    // hide icons only if no values are in the task bar
+    if (
+      addTaskBar.value.trim() == "" &&
+      addTaskDateInput != document.activeElement
+    ) {
+      addTaskOptionsContainer.classList.add("hidden");
+      addTaskDateLabel.classList.add("hidden");
+      addTaskPriority.classList.add("hidden");
+    }
+  };
 
   return addTaskBarContainer;
 }
