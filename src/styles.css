@@ -231,6 +231,7 @@ hr.vertical {
   top: 50%;
   right: 0;
   transform: translateY(-50%);
+  border: none;
 }
 
 .add-task.svg {
@@ -248,7 +249,8 @@ hr.vertical {
   position: relative;
 }
 
-.add-task.date-picker {
+.add-task.date-picker,
+.add-task.priority-picker {
   position: absolute;
   width: 0;
   height: 0;

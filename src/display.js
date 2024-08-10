@@ -270,7 +270,7 @@ function createTaskSectionHeading(listName = "Default") {
 }
 
 function createAddTaskBar() {
-  const addTaskBarContainer = document.createElement("div");
+  const addTaskBarContainer = document.createElement("form");
   addTaskBarContainer.classList.add("add-task", "input", "container");
 
   const addTaskBar = document.createElement("input");
@@ -279,7 +279,7 @@ function createAddTaskBar() {
   addTaskBar.type = "text";
   addTaskBar.placeholder = "+ Add Task";
 
-  const addTaskOptionsContainer = document.createElement("div");
+  const addTaskOptionsContainer = document.createElement("fieldset");
   addTaskOptionsContainer.classList.add(
     "add-task",
     "svgs",
@@ -303,13 +303,21 @@ function createAddTaskBar() {
   addTaskDate.src = images["calendar_options_default"];
   addTaskDate.alt = "Calendar Options";
 
+  const addTaskPriorityLabel = document.createElement("label");
+  addTaskPriorityLabel.classList.add("add-task", "priority", "label", "hidden");
+
+  const addTaskPriorityInput = document.createElement("input");
+  addTaskPriorityInput.setAttribute("type", "radio");
+  addTaskPriorityInput.classList.add("add-task", "priority-picker");
+
   const addTaskPriority = document.createElement("img");
-  addTaskPriority.classList.add("add-task", "svg", "priority", "hidden");
+  addTaskPriority.classList.add("add-task", "svg", "priority");
   addTaskPriority.src = images["priority_flag_default"];
   addTaskPriority.alt = "Priority Options";
 
   addTaskDateLabel.append(addTaskDate, addTaskDateInput);
-  addTaskOptionsContainer.append(addTaskDateLabel, addTaskPriority);
+  addTaskPriorityLabel.append(addTaskPriority, addTaskPriorityInput);
+  addTaskOptionsContainer.append(addTaskDateLabel, addTaskPriorityLabel);
   addTaskBarContainer.append(addTaskBar, addTaskOptionsContainer);
 
   // pressing on the icon shows the date-picker
@@ -339,7 +347,7 @@ function createAddTaskBar() {
     if (addTaskOptionsContainer.classList.contains("hidden")) {
       addTaskOptionsContainer.classList.remove("hidden");
       addTaskDateLabel.classList.remove("hidden");
-      addTaskPriority.classList.remove("hidden");
+      addTaskPriorityLabel.classList.remove("hidden");
     }
   });
 
