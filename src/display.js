@@ -279,7 +279,7 @@ function createAddTaskBar() {
   addTaskBar.type = "text";
   addTaskBar.placeholder = "+ Add Task";
 
-  const addTaskOptionsContainer = document.createElement("fieldset");
+  const addTaskOptionsContainer = document.createElement("div");
   addTaskOptionsContainer.classList.add(
     "add-task",
     "svgs",
@@ -303,12 +303,10 @@ function createAddTaskBar() {
   addTaskDate.src = images["calendar_options_default"];
   addTaskDate.alt = "Calendar Options";
 
-  const addTaskPriorityLabel = document.createElement("label");
+  const addTaskPriorityLabel = document.createElement("div");
   addTaskPriorityLabel.classList.add("add-task", "priority", "label", "hidden");
 
-  const addTaskPriorityInput = document.createElement("input");
-  addTaskPriorityInput.setAttribute("type", "radio");
-  addTaskPriorityInput.classList.add("add-task", "priority-picker");
+  const addTaskPriorityDialog = createPriorityDialog();
 
   const addTaskPriority = document.createElement("img");
   addTaskPriority.classList.add("add-task", "svg", "priority");
@@ -316,7 +314,7 @@ function createAddTaskBar() {
   addTaskPriority.alt = "Priority Options";
 
   addTaskDateLabel.append(addTaskDate, addTaskDateInput);
-  addTaskPriorityLabel.append(addTaskPriority, addTaskPriorityInput);
+  addTaskPriorityLabel.append(addTaskPriority, addTaskPriorityDialog);
   addTaskOptionsContainer.append(addTaskDateLabel, addTaskPriorityLabel);
   addTaskBarContainer.append(addTaskBar, addTaskOptionsContainer);
 
@@ -342,6 +340,23 @@ function createAddTaskBar() {
     addTaskBar.focus();
   });
 
+  addTaskPriorityLabel.addEventListener("mousedown", (e) => {
+    e.preventDefault();
+    console.log("boop");
+    addTaskPriorityDialog.show();
+    addTaskPriorityDialog.focus();
+  });
+
+  addTaskPriorityDialog.addEventListener("focus", () => {
+    addTaskBar.classList.add("focus");
+  });
+
+  addTaskPriorityDialog.addEventListener("blur", () => {
+    addTaskPriorityDialog.close();
+    addTaskBar.classList.remove("focus");
+    addTaskBar.focus();
+  });
+
   // toggles the icons on input focus or unfocus
   addTaskBar.addEventListener("focus", () => {
     if (addTaskOptionsContainer.classList.contains("hidden")) {
@@ -360,15 +375,43 @@ function createAddTaskBar() {
     // hide icons only if no values are in the task bar
     if (
       addTaskBar.value.trim() == "" &&
-      addTaskDateInput != document.activeElement
+      addTaskDateInput != document.activeElement &&
+      addTaskPriorityDialog != document.activeElement
     ) {
       addTaskOptionsContainer.classList.add("hidden");
       addTaskDateLabel.classList.add("hidden");
-      addTaskPriority.classList.add("hidden");
+      addTaskPriorityLabel.classList.add("hidden");
     }
   };
-
   return addTaskBarContainer;
+}
+
+function createPriorityDialog() {
+  const dialog = document.createElement("dialog");
+  dialog.classList.add("add-task", "priority-picker");
+
+  const imgs = [
+    images["priority_flag_default"],
+    images["priority_flag_low"],
+    images["priority_flag_medium"],
+    images["priority_flag_high"],
+  ];
+  for (let i = 3; i >= 0; i--) {
+    const label = document.createElement("label");
+    const img = document.createElement("img");
+    img.src = imgs[i];
+    img.classList.add("add-task", "svg", "priority");
+    const radio = document.createElement("input");
+    radio.classList.add("hidden");
+    radio.setAttribute("type", "radio");
+    radio.setAttribute("name", "priority");
+    radio.setAttribute("id", `priority${i}`);
+    radio.setAttribute("value", i);
+    label.append(img, radio);
+    dialog.appendChild(label);
+  }
+
+  return dialog;
 }
 
 function createTask(task) {
@@ -495,7 +538,7 @@ function createViewTaskHeader(dueDate) {
 
   const viewTaskPriority = document.createElement("img");
   viewTaskPriority.classList.add("view-task", "header", "svg");
-  viewTaskPriority.src = images["priority_flag"];
+  viewTaskPriority.src = images["priority_flag_default"];
   viewTaskPriority.alt = "Priority";
 
   viewTaskHeaderContainer.append(

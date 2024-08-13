@@ -234,7 +234,12 @@ hr.vertical {
   border: none;
 }
 
+.add-task.svgs.container.hidden {
+  padding: 0;
+}
+
 .add-task.svg {
+  min-width: 26px;
   width: 26px;
   height: auto;
   padding: 3px;
@@ -245,17 +250,38 @@ hr.vertical {
   background-color: var(--off-white);
 }
 
-.add-task.date.label {
+.add-task.label {
   position: relative;
+  outline: 0;
+  border: 0;
 }
 
-.add-task.date-picker,
-.add-task.priority-picker {
+.add-task.date-picker {
   position: absolute;
   width: 0;
   height: 0;
   border: 0;
   opacity: 0;
+}
+
+.add-task.priority-picker:focus {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  position: absolute;
+  outline: 0;
+  border: 0;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 5px -1px var(--grey);
+}
+
+.add-task.priority-picker label {
+  flex: 1;
+}
+
+.add-task.priority-picker input[type="radio"] {
+  position: absolute;
 }
 
 .task.container {
@@ -513,9 +539,9 @@ dialog::backdrop {
 }
 
 .hidden {
-  display: none;
-  padding: 0;
-  margin: 0;
-  height: 0;
-  width: 0;
+  padding: 0 !important;
+  margin: 0 !important;
+  height: 0 !important;
+  width: 0 !important;
+  opacity: 0 !important;
 }
