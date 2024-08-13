@@ -267,7 +267,7 @@ hr.vertical {
 .add-task.priority-picker:focus {
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.25rem;
   padding: 0.5rem;
   position: absolute;
   outline: 0;
@@ -282,6 +282,11 @@ hr.vertical {
 
 .add-task.priority-picker input[type="radio"] {
   position: absolute;
+}
+
+.add-task.priority-picker label:has(input[name="priority"]:checked) {
+  background-color: var(--light-blue);
+  border-radius: 0.25rem;
 }
 
 .task.container {

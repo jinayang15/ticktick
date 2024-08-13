@@ -340,9 +340,9 @@ function createAddTaskBar() {
     addTaskBar.focus();
   });
 
+  // same as date picker logic
   addTaskPriorityLabel.addEventListener("mousedown", (e) => {
     e.preventDefault();
-    console.log("boop");
     addTaskPriorityDialog.show();
     addTaskPriorityDialog.focus();
   });
@@ -355,6 +355,8 @@ function createAddTaskBar() {
     addTaskPriorityDialog.close();
     addTaskBar.classList.remove("focus");
     addTaskBar.focus();
+    // if timeout is not used, the value of the priority will not be read correctly
+    setTimeout(changePriority, 0);
   });
 
   // toggles the icons on input focus or unfocus
@@ -383,6 +385,19 @@ function createAddTaskBar() {
       addTaskPriorityLabel.classList.add("hidden");
     }
   };
+
+  const changePriority = function () {
+    const imgs = [
+      images["priority_flag_default"],
+      images["priority_flag_low"],
+      images["priority_flag_medium"],
+      images["priority_flag_high"],
+    ];
+    const priority = document.querySelector(
+      '.priority-picker input[name="priority"]:checked'
+    );
+    addTaskPriority.src = imgs[priority.value];
+  };
   return addTaskBarContainer;
 }
 
@@ -396,6 +411,8 @@ function createPriorityDialog() {
     images["priority_flag_medium"],
     images["priority_flag_high"],
   ];
+  // 4 priority levels:
+  // High - 3, Medium - 2, Low - 1, None - 0
   for (let i = 3; i >= 0; i--) {
     const label = document.createElement("label");
     const img = document.createElement("img");
@@ -407,6 +424,7 @@ function createPriorityDialog() {
     radio.setAttribute("name", "priority");
     radio.setAttribute("id", `priority${i}`);
     radio.setAttribute("value", i);
+    if (i == 0) radio.setAttribute("checked", "checked");
     label.append(img, radio);
     dialog.appendChild(label);
   }
