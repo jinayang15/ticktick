@@ -210,11 +210,6 @@ function createTaskSectionHeading(listName = "Default") {
   tasksListName.classList.add("tasks", "heading", "text");
   tasksListName.textContent = listName;
 
-  const sortButton = document.createElement("img");
-  sortButton.classList.add("tasks", "heading", "svg");
-  sortButton.src = images["sort"];
-  sortButton.alt = "Sort Tasks";
-
   const moreButton = document.createElement("img");
   moreButton.classList.add("tasks", "heading", "svg");
   moreButton.src = images["more_hori"];
@@ -265,7 +260,6 @@ function createTaskSectionHeading(listName = "Default") {
   tasksHeadingContainer.append(
     menuToggle,
     tasksListName,
-    sortButton,
     moreButton,
     moreDropdown
   );
@@ -324,6 +318,7 @@ function createAddTaskBar() {
   addTaskOptionsContainer.append(addTaskDateLabel, addTaskPriorityLabel);
   addTaskBarContainer.append(addTaskBar, addTaskOptionsContainer);
 
+  // Event Listeners
   // add new task when submitted
   addTaskBarContainer.addEventListener("submit", (e) => {
     e.preventDefault();
