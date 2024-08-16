@@ -9,6 +9,7 @@
   --grey: #858585;
   --bright-blue: #4872f9;
   --light-blue: #ecf0ff;
+  --red: #c30000;
 }
 
 html,
@@ -46,7 +47,7 @@ hr.vertical {
   text-align: center;
 }
 
-.categories.section {
+#categories-section {
   padding: 1rem;
   padding-right: 0.5rem;
   flex: 1;
@@ -106,7 +107,7 @@ hr.vertical {
   background-color: var(--off-white);
 }
 
-.tasks.section {
+#tasks-section {
   padding: 1rem;
   border-left: 1px solid var(--platinum);
   border-right: 1px solid var(--platinum);
@@ -114,7 +115,7 @@ hr.vertical {
   min-width: 0;
 }
 
-.tasks.heading.container {
+.tasks.section.heading {
   position: relative;
   display: flex;
   align-items: center;
@@ -185,7 +186,7 @@ hr.vertical {
   max-width: 50%;
 }
 
-.view-task.section {
+#view-task-section {
   display: flex;
   flex-direction: column;
   overflow: hidden;

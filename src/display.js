@@ -1,4 +1,4 @@
-import { formatDistanceToNow } from "date-fns";
+import { toDate, differenceInCalendarDays, min } from "date-fns";
 import { Task, List } from "./class";
 import * as App from "./app";
 
@@ -85,7 +85,6 @@ function createGroupByOther() {
   groupByOtherContainer.classList.add("group-by", "other", "container");
   groupByOtherContainer.append(
     createGroupByItem("Completed", "checkbox_checked", "other")
-    // createGroupByItem("Trash", "delete", "other")
   );
 
   return groupByOtherContainer;
@@ -194,7 +193,7 @@ export function addMenuToggle() {
 
 function createTaskSectionHeading(listName = "Default") {
   const tasksHeadingContainer = document.createElement("div");
-  tasksHeadingContainer.classList.add("tasks", "heading", "container");
+  tasksHeadingContainer.classList.add("tasks", "section", "heading");
 
   const menuToggle = document.createElement("img");
   menuToggle.classList.add("tasks", "heading", "svg");
@@ -278,6 +277,8 @@ function createAddTaskBar() {
   addTaskBar.name = "add-task";
   addTaskBar.type = "text";
   addTaskBar.placeholder = "+ Add Task";
+  addTaskBar.required = true;
+  addTaskBar.setAttribute("pattern", ".{1,}");
 
   const addTaskOptionsContainer = document.createElement("div");
   addTaskOptionsContainer.classList.add(
@@ -317,6 +318,30 @@ function createAddTaskBar() {
   addTaskPriorityLabel.append(addTaskPriority, addTaskPriorityDialog);
   addTaskOptionsContainer.append(addTaskDateLabel, addTaskPriorityLabel);
   addTaskBarContainer.append(addTaskBar, addTaskOptionsContainer);
+
+  addTaskBarContainer.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const listIdx = document.getElementById("tasks-section").dataset.list;
+    const list = App.getLists()[listIdx];
+    const taskIdx = list.tasks.length;
+    const name = addTaskBar.value;
+    let date = addTaskDateInput.value;
+    const priority = addTaskPriorityDialog.querySelector(":checked").value;
+    let useTime = false;
+
+    if (addTaskDate.src != images["calendar_options_default"]) {
+      date = toDate(addTaskDateInput.value);
+      const hour = date.getHours();
+      const minute = date.getMinutes();
+      useTime = hour != 0 || minute != 0;
+    } else {
+      date = null;
+    }
+    const task = new Task(taskIdx, name, "", date, useTime, priority, false);
+    list.addTask(task);
+    displayNewTask();
+    resetForm();
+  });
 
   // pressing on the icon shows the date-picker
   addTaskDateLabel.addEventListener("mousedown", (e) => {
@@ -398,6 +423,19 @@ function createAddTaskBar() {
     );
     addTaskPriority.src = imgs[priority.value];
   };
+
+  const resetForm = function () {
+    // reset form values
+    addTaskBarContainer.reset();
+    // set default time to 12AM
+    let now = new Date();
+    now.setUTCHours(0, 0, 0);
+    addTaskDateInput.value = now.toISOString().slice(0, 16);
+    // reset calendar options icon
+    addTaskDate.src = images["calendar_options_default"];
+    // reset priority flag icon
+    changePriority();
+  };
   return addTaskBarContainer;
 }
 
@@ -424,8 +462,21 @@ function createTask(task) {
   taskName.classList.add("task", "name");
   taskName.dataset.ph = "No Title";
   taskDueDate.classList.add("task", "due-date");
+
   taskName.textContent = task.name;
-  taskDueDate.textContent = formatDistanceToNow(task.dueDate);
+  if (task.dueDate) {
+    const numDaysUntil = differenceInCalendarDays(task.dueDate, new Date());
+    if (numDaysUntil < 0) {
+      if (numDaysUntil == -1) taskDueDate.textContent = "Yesterday";
+      else taskDueDate.textContent = numDaysUntil * -1 + " days overdue";
+      taskDueDate.style.color = "#c30000";
+    } else if (numDaysUntil > 0) {
+      if (numDaysUntil == 1) taskDueDate.textContent = "Tomorrow";
+      else taskDueDate.textContent = numDaysUntil + " days left";
+    } else {
+      taskDueDate.textContent = "Today";
+    }
+  }
 
   taskDetailsContainer.append(taskName, taskDueDate);
   taskContainer.append(taskCheckboxLabel, taskDetailsContainer);
@@ -453,6 +504,20 @@ function createTaskClickable(task) {
     }
   });
   return taskContainer;
+}
+
+function displayNewTask() {
+  const tasksSection = document.getElementById("tasks-section");
+  const tasksContainer = tasksSection.querySelector(".tasks.container");
+  const listIdx = tasksSection.dataset.list;
+  const list = App.getLists()[listIdx];
+  const newTask = list.tasks[list.tasks.length - 1];
+
+  const taskSeparator = document.createElement("hr");
+  taskSeparator.classList.add("horizontal", "task", "separator");
+  taskSeparator.dataset.task = newTask.idx;
+
+  tasksContainer.append(createTaskClickable(newTask), taskSeparator);
 }
 
 function createPriorityDialog() {
@@ -569,7 +634,7 @@ function createViewTaskHeader(dueDate) {
   return viewTaskHeaderContainer;
 }
 
-function createViewTaskBody(name = "Task Name", desc = "") {
+function createViewTaskBody(name, desc) {
   const viewTaskBodyContainer = document.createElement("div");
   viewTaskBodyContainer.classList.add("view-task", "body", "container");
 
@@ -661,8 +726,8 @@ function createAddListModal() {
     }
   });
 
-  saveButton.addEventListener("click", (event) => {
-    event.preventDefault();
+  saveButton.addEventListener("click", (e) => {
+    e.preventDefault();
     const listName = listNameInput.value;
     App.addList(new List(App.getLists().length, listName));
     displayNewListInCategories();

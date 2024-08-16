@@ -4,19 +4,17 @@ export class Task {
     name,
     desc = "",
     dueDate,
-    time = false,
+    useTime = false,
     priority,
-    complete,
-    tags = []
+    complete
   ) {
     this.idx = idx;
     this.name = name;
     this.desc = desc;
     this.dueDate = dueDate;
-    this.time = time;
+    this.useTime = useTime; // bool indicating whether to include datetime
     this.priority = priority;
     this.complete = complete;
-    this.tags = tags;
   }
   get idx() {
     return this._idx;
@@ -42,11 +40,11 @@ export class Task {
   set dueDate(dueDate) {
     this._dueDate = dueDate;
   }
-  get time() {
-    return this._time;
+  get useTime() {
+    return this._useTime;
   }
-  set time(bool) {
-    this._time = bool;
+  set useTime(bool) {
+    this._useTime = bool;
   }
   get priority() {
     return this._priority;
@@ -66,7 +64,7 @@ export class Task {
   }
   printDetailed() {
     let output = `${this.name} ${this.dueDate.toDateString()} `;
-    if (this.time) {
+    if (this.useTime) {
       output += this.dueDate.toTimeString();
     }
     output += `\n${this.desc}\nPriority: ${this.priority}\nComplete: ${this.complete}`;
