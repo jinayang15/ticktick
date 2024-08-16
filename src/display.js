@@ -1,4 +1,9 @@
-import { toDate, differenceInCalendarDays, min } from "date-fns";
+import {
+  isBefore,
+  toDate,
+  differenceInCalendarDays,
+  formatDistanceToNow,
+} from "date-fns";
 import { Task, List } from "./class";
 import * as App from "./app";
 
@@ -319,6 +324,7 @@ function createAddTaskBar() {
   addTaskOptionsContainer.append(addTaskDateLabel, addTaskPriorityLabel);
   addTaskBarContainer.append(addTaskBar, addTaskOptionsContainer);
 
+  // add new task when submitted
   addTaskBarContainer.addEventListener("submit", (e) => {
     e.preventDefault();
     const listIdx = document.getElementById("tasks-section").dataset.list;
@@ -443,6 +449,7 @@ function createTask(task) {
   const taskContainer = document.createElement("div");
   taskContainer.classList.add("task", "container");
   taskContainer.dataset.task = task.idx;
+  taskContainer.dataset.priority = task.priority;
 
   const taskCheckboxLabel = document.createElement("label");
   const taskCheckbox = document.createElement("input");
@@ -464,24 +471,46 @@ function createTask(task) {
   taskDueDate.classList.add("task", "due-date");
 
   taskName.textContent = task.name;
-  if (task.dueDate) {
-    const numDaysUntil = differenceInCalendarDays(task.dueDate, new Date());
-    if (numDaysUntil < 0) {
-      if (numDaysUntil == -1) taskDueDate.textContent = "Yesterday";
-      else taskDueDate.textContent = numDaysUntil * -1 + " days overdue";
-      taskDueDate.style.color = "#c30000";
-    } else if (numDaysUntil > 0) {
-      if (numDaysUntil == 1) taskDueDate.textContent = "Tomorrow";
-      else taskDueDate.textContent = numDaysUntil + " days left";
-    } else {
-      taskDueDate.textContent = "Today";
-    }
-  }
+  taskDueDate.textContent = displayTaskDueDate(task);
+  if (isBefore(task.dueDate, new Date())) taskDueDate.style.color = "#c30000";
 
   taskDetailsContainer.append(taskName, taskDueDate);
   taskContainer.append(taskCheckboxLabel, taskDetailsContainer);
 
   return taskContainer;
+}
+
+function displayTaskDueDate(task) {
+  let output = "";
+  if (task.dueDate) {
+    const numDaysUntil = differenceInCalendarDays(task.dueDate, new Date());
+    if (numDaysUntil < 0) {
+      if (numDaysUntil == -1) {
+        if (task.useTime) {
+          output = formatDistanceToNow(task.dueDate) + " overdue";
+          // capitalize first character
+          output = output.charAt(0).toUpperCase() + output.slice(1);
+        } else output = "Yesterday";
+      } else output = Math.abs(numDaysUntil) + " days overdue";
+    } else if (numDaysUntil > 0) {
+      if (numDaysUntil == 1) {
+        if (task.useTime) {
+          output = formatDistanceToNow(task.dueDate) + " left";
+          // capitalize first character
+          output = output.charAt(0).toUpperCase() + output.slice(1);
+        } else output = "Tomorrow";
+      } else output = numDaysUntil + " days left";
+    } else {
+      if (task.useTime) {
+        output = formatDistanceToNow(task.dueDate);
+        // capitalize first letter
+        output = output.charAt(0).toUpperCase() + output.slice(1);
+        if (isBefore(task.dueDate, new Date())) output += " overdue";
+        else output += " left";
+      } else output = "Today";
+    }
+  }
+  return output;
 }
 
 function createTaskClickable(task) {

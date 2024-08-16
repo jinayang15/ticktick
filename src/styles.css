@@ -10,6 +10,9 @@
   --bright-blue: #4872f9;
   --light-blue: #ecf0ff;
   --red: #c30000;
+  --light-red: #feeded;
+  --yellow: #ffc800;
+  --light-yellow: #fcf8ea;
 }
 
 html,
@@ -311,14 +314,14 @@ hr.vertical {
   height: auto;
 }
 
-input[type="checkbox"] {
+.checkbox {
   appearance: none;
   width: 0;
   height: 0;
   position: absolute;
 }
 
-label:has(input[type="checkbox"]) {
+label:has(.checkbox) {
   position: relative;
   width: 18px;
   height: 18px;
@@ -328,16 +331,40 @@ label:has(input[type="checkbox"]) {
   min-width: 18px;
 }
 
-label:has(input[type="checkbox"]):hover {
+label:has(.checkbox):hover {
   background-color: var(--platinum);
 }
 
-label:has(input[type="checkbox"]:checked) {
+[data-priority="3"] label:has(.checkbox) {
+  border-color: var(--red);
+}
+
+[data-priority="3"] label:has(.checkbox):hover {
+  background-color: var(--light-red);
+}
+
+[data-priority="2"] label:has(.checkbox) {
+  border-color: var(--yellow);
+}
+
+[data-priority="2"] label:has(.checkbox):hover {
+  background-color: var(--light-yellow);
+}
+
+[data-priority="1"] label:has(.checkbox) {
+  border-color: var(--bright-blue);
+}
+
+[data-priority="1"] label:has(.checkbox):hover {
+  background-color: var(--off-white);
+}
+
+label:has(.checkbox:checked) {
   background-color: var(--platinum);
   border-color: var(--platinum);
 }
 
-label:has(input[type="checkbox"]:checked):hover {
+label:has(.checkbox:checked):hover {
   background-color: var(--grey);
   border-color: var(--grey);
 }
