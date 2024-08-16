@@ -1,4 +1,4 @@
-import { add } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 import { Task, List } from "./class";
 import * as App from "./app";
 
@@ -22,24 +22,18 @@ export function clearSection(id) {
 }
 
 export function initCategoriesSection() {
-  const categoriesSectionContainer =
-    document.getElementById("categories-section");
+  const categoriesSection = document.getElementById("categories-section");
   const hrSeparator = document.createElement("hr");
 
-  categoriesSectionContainer.classList.remove("hidden");
+  categoriesSection.classList.remove("hidden");
 
   hrSeparator.classList.add("horizontal", "categories", "separator");
-  categoriesSectionContainer.classList.add(
-    "categories",
-    "section",
-    "container"
-  );
 
   const groupByListContainer = document.createElement("div");
   groupByListContainer.classList.add("group-by", "list", "container");
   groupByListContainer.id = "group-by-list";
 
-  categoriesSectionContainer.append(
+  categoriesSection.append(
     createGroupByPeriod(),
     hrSeparator,
     groupByListContainer,
@@ -157,21 +151,27 @@ function deleteList() {
 }
 
 export function initTasksSection(list) {
-  const tasksSectionContainer = document.getElementById("tasks-section");
-  tasksSectionContainer.dataset.list = list.idx;
+  const tasksSection = document.getElementById("tasks-section");
+  tasksSection.dataset.list = list.idx;
+
+  const tasksContainer = document.createElement("div");
+  tasksContainer.classList.add("tasks", "container");
 
   const taskSeparator = document.createElement("hr");
   taskSeparator.classList.add("horizontal", "task", "separator");
 
-  tasksSectionContainer.append(
+  tasksSection.append(
     createTaskSectionHeading(list.name),
-    createAddTaskBar()
+    createAddTaskBar(),
+    tasksContainer
   );
   for (let i = 0; i < list.tasks.length; i++) {
     list.tasks[i].idx = i;
-    tasksSectionContainer.appendChild(createTaskClickable(list.tasks[i]));
     taskSeparator.dataset.task = i;
-    tasksSectionContainer.appendChild(taskSeparator.cloneNode(true));
+    tasksContainer.append(
+      createTaskClickable(list.tasks[i]),
+      taskSeparator.cloneNode(true)
+    );
   }
 
   addMenuToggle();
@@ -401,6 +401,60 @@ function createAddTaskBar() {
   return addTaskBarContainer;
 }
 
+function createTask(task) {
+  const taskContainer = document.createElement("div");
+  taskContainer.classList.add("task", "container");
+  taskContainer.dataset.task = task.idx;
+
+  const taskCheckboxLabel = document.createElement("label");
+  const taskCheckbox = document.createElement("input");
+  const taskCheckmark = document.createElement("span");
+
+  taskCheckbox.classList.add("task", "checkbox");
+  taskCheckbox.type = "checkbox";
+  taskCheckbox.checked = task.complete;
+  taskCheckmark.classList.add("checkmark");
+  taskCheckboxLabel.append(taskCheckbox, taskCheckmark);
+
+  const taskDetailsContainer = document.createElement("div");
+  taskDetailsContainer.classList.add("task-details", "container");
+
+  const taskName = document.createElement("span");
+  const taskDueDate = document.createElement("span");
+  taskName.classList.add("task", "name");
+  taskName.dataset.ph = "No Title";
+  taskDueDate.classList.add("task", "due-date");
+  taskName.textContent = task.name;
+  taskDueDate.textContent = formatDistanceToNow(task.dueDate);
+
+  taskDetailsContainer.append(taskName, taskDueDate);
+  taskContainer.append(taskCheckboxLabel, taskDetailsContainer);
+
+  return taskContainer;
+}
+
+function createTaskClickable(task) {
+  const taskContainer = createTask(task);
+  taskContainer.addEventListener("click", () => {
+    disableActiveTask();
+    taskContainer.classList.add("active");
+    hideTaskSeparator(taskContainer.dataset.task);
+    clearSection("view-task-section");
+    initViewTaskSection(task);
+  });
+  taskContainer.addEventListener("mouseover", () => {
+    if (!taskContainer.classList.contains("active")) {
+      hideTaskSeparator(taskContainer.dataset.task);
+    }
+  });
+  taskContainer.addEventListener("mouseout", () => {
+    if (!taskContainer.classList.contains("active")) {
+      showTaskSeparator(taskContainer.dataset.task);
+    }
+  });
+  return taskContainer;
+}
+
 function createPriorityDialog() {
   const dialog = document.createElement("dialog");
   dialog.classList.add("add-task", "priority-picker");
@@ -430,60 +484,6 @@ function createPriorityDialog() {
   }
 
   return dialog;
-}
-
-function createTask(task) {
-  const taskContainer = document.createElement("div");
-  taskContainer.classList.add("task", "container");
-  taskContainer.dataset.task = task.idx;
-
-  const taskCheckboxLabel = document.createElement("label");
-  const taskCheckbox = document.createElement("input");
-  const taskCheckmark = document.createElement("span");
-
-  taskCheckbox.classList.add("task", "checkbox");
-  taskCheckbox.type = "checkbox";
-  taskCheckbox.checked = task.complete;
-  taskCheckmark.classList.add("checkmark");
-  taskCheckboxLabel.append(taskCheckbox, taskCheckmark);
-
-  const taskDetailsContainer = document.createElement("div");
-  taskDetailsContainer.classList.add("task-details", "container");
-
-  const taskName = document.createElement("span");
-  const taskDueDate = document.createElement("span");
-  taskName.classList.add("task", "name");
-  taskName.dataset.ph = "No Title";
-  taskDueDate.classList.add("task", "due-date");
-  taskName.textContent = task.name;
-  taskDueDate.textContent = task.dueDate.toDateString();
-
-  taskDetailsContainer.append(taskName, taskDueDate);
-  taskContainer.append(taskCheckboxLabel, taskDetailsContainer);
-
-  return taskContainer;
-}
-
-function createTaskClickable(task) {
-  const taskContainer = createTask(task);
-  taskContainer.addEventListener("click", () => {
-    disableActiveTask();
-    taskContainer.classList.add("active");
-    hideTaskSeparator(taskContainer.dataset.task);
-    clearSection("view-task-section");
-    initViewTaskSection(task);
-  });
-  taskContainer.addEventListener("mouseover", () => {
-    if (!taskContainer.classList.contains("active")) {
-      hideTaskSeparator(taskContainer.dataset.task);
-    }
-  });
-  taskContainer.addEventListener("mouseout", () => {
-    if (!taskContainer.classList.contains("active")) {
-      showTaskSeparator(taskContainer.dataset.task);
-    }
-  });
-  return taskContainer;
 }
 
 function showTaskSeparator(taskIdx) {

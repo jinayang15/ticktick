@@ -46,7 +46,7 @@ hr.vertical {
   text-align: center;
 }
 
-.categories.section.container {
+.categories.section {
   padding: 1rem;
   padding-right: 0.5rem;
   flex: 1;
@@ -106,7 +106,7 @@ hr.vertical {
   background-color: var(--off-white);
 }
 
-.tasks.section.container {
+.tasks.section {
   padding: 1rem;
   border-left: 1px solid var(--platinum);
   border-right: 1px solid var(--platinum);
@@ -185,7 +185,7 @@ hr.vertical {
   max-width: 50%;
 }
 
-.view-task.section.container {
+.view-task.section {
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -268,7 +268,7 @@ hr.vertical {
   display: flex;
   justify-content: center;
   gap: 0.25rem;
-  padding: 0.5rem;
+  padding: 0.25rem;
   position: absolute;
   outline: 0;
   border: 0;
