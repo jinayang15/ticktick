@@ -196,7 +196,7 @@ export function addMenuToggle() {
   });
 }
 
-function createTaskSectionHeading(listName = "Default") {
+function createTaskSectionHeading(listName) {
   const tasksHeadingContainer = document.createElement("div");
   tasksHeadingContainer.classList.add("tasks", "section", "heading");
 
@@ -210,6 +210,19 @@ function createTaskSectionHeading(listName = "Default") {
   tasksListName.classList.add("tasks", "heading", "text");
   tasksListName.textContent = listName;
 
+  const more = createListMoreDropdown();
+
+  tasksHeadingContainer.append(
+    menuToggle,
+    tasksListName,
+    more.button,
+    more.dropdown
+  );
+
+  return tasksHeadingContainer;
+}
+
+function createListMoreDropdown() {
   const moreButton = document.createElement("img");
   moreButton.classList.add("tasks", "heading", "svg");
   moreButton.src = images["more_hori"];
@@ -218,53 +231,49 @@ function createTaskSectionHeading(listName = "Default") {
   const moreDropdown = document.createElement("dialog");
   moreDropdown.classList.add("tasks", "more-dropdown");
 
-  const moreDropdownDelete = document.createElement("div");
-  moreDropdownDelete.classList.add(
-    "more-dropdown",
-    "item",
-    "container",
-    "delete"
+  // more dropdown items
+  const moreDropdownDelete = createListMoreItem(
+    "delete",
+    "Delete",
+    "Delete List"
   );
 
-  const deleteSvg = document.createElement("img");
-  deleteSvg.classList.add("more-dropdown", "item", "svg", "delete");
-  deleteSvg.src = images["delete"];
-  deleteSvg.alt = "Delete List";
-
-  const deleteText = document.createElement("span");
-  deleteText.classList.add("more-dropdown", "item", "text", "delete");
-  deleteText.textContent = "Delete";
-
-  moreDropdownDelete.append(deleteSvg, deleteText);
-
-  moreDropdown.appendChild(moreDropdownDelete);
-
-  document.addEventListener("click", (e) => {
-    const clickMore = moreButton.contains(e.target);
-    const clickDropdown = moreDropdown.contains(e.target);
-
-    if (!clickMore && !clickDropdown) {
-      moreDropdown.open = false;
-    }
-  });
+  moreDropdown.append(moreDropdownDelete);
 
   moreButton.addEventListener("click", () => {
-    moreDropdown.open = !moreDropdown.open;
+    moreDropdown.show();
+    moreDropdown.focus();
   });
 
+  moreDropdown.addEventListener("blur", () => {
+    moreDropdown.close();
+  });
+
+  // dropdown item eventlisteners
   moreDropdownDelete.addEventListener("click", () => {
     deleteList();
     moreDropdown.open = false;
   });
 
-  tasksHeadingContainer.append(
-    menuToggle,
-    tasksListName,
-    moreButton,
-    moreDropdown
-  );
+  return { button: moreButton, dropdown: moreDropdown };
+}
 
-  return tasksHeadingContainer;
+function createListMoreItem(name, text, alt) {
+  const moreDropdownItem = document.createElement("div");
+  moreDropdownItem.classList.add("more-dropdown", "item", "container", name);
+
+  const itemSvg = document.createElement("img");
+  itemSvg.classList.add("more-dropdown", "item", "svg", name);
+  itemSvg.src = images[name];
+  itemSvg.alt = alt;
+
+  const itemText = document.createElement("span");
+  itemText.classList.add("more-dropdown", "item", "text", name);
+  itemText.textContent = text;
+
+  moreDropdownItem.append(itemSvg, itemText);
+
+  return moreDropdownItem;
 }
 
 function createAddTaskBar() {

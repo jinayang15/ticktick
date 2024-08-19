@@ -577,4 +577,6 @@ dialog::backdrop {
   height: 0 !important;
   width: 0 !important;
   opacity: 0 !important;
+  /* otherwise the categories section won't fold */
+  flex: 0 !important;
 }
