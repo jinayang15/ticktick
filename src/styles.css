@@ -269,9 +269,10 @@ hr.vertical {
   opacity: 0;
 }
 
-.add-task.priority-picker:focus {
+.priority-picker:focus {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 0.25rem;
   padding: 0.25rem;
   position: absolute;
@@ -279,17 +280,19 @@ hr.vertical {
   border: 0;
   border-radius: 0.5rem;
   box-shadow: 0 0 5px -1px var(--grey);
+  top: 100%;
 }
 
-.add-task.priority-picker label {
+.priority-picker label {
+  line-height: 0;
   flex: 1;
 }
 
-.add-task.priority-picker input[type="radio"] {
+.priority-picker input[type="radio"] {
   position: absolute;
 }
 
-.add-task.priority-picker label:has(input[name="priority"]:checked) {
+.priority-picker label:has(input[name="priority"]:checked) {
   background-color: var(--light-blue);
   border-radius: 0.25rem;
 }
@@ -438,13 +441,14 @@ label input:checked ~ .checkmark {
   width: 24px;
   height: auto;
   padding: 2px;
+  min-width: 24px;
 }
 
 .heading.container > .view-task.svg:last-of-type {
   margin-left: 0.25rem;
 }
 
-.heading.container > .view-task.svg:hover {
+.view-task.svg:hover {
   background-color: var(--off-white);
   border-radius: 4px;
 }
@@ -478,6 +482,16 @@ label input:checked ~ .checkmark {
 
 .view-task.date-picker {
   top: 100%;
+}
+
+.view-task.priority.container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.view-task.priority-picker {
+  flex-direction: column;
 }
 
 .view-task.body.container {

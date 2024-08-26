@@ -3,7 +3,6 @@ import {
   toDate,
   differenceInCalendarDays,
   formatDistanceToNow,
-  setDate,
 } from "date-fns";
 import { Task, List } from "./class";
 import * as App from "./app";
@@ -340,24 +339,29 @@ function createAddTaskBar() {
   now.setUTCHours(0, 0, 0);
   addTaskDateInput.value = now.toISOString().slice(0, 16);
 
-  const addTaskDate = document.createElement("img");
-  addTaskDate.classList.add("add-task", "svg", "date");
-  addTaskDate.src = images["calendar_options_default"];
-  addTaskDate.alt = "Calendar Options";
+  const addTaskDateIcon = document.createElement("img");
+  addTaskDateIcon.classList.add("add-task", "svg", "date");
+  addTaskDateIcon.src = images["calendar_options_default"];
+  addTaskDateIcon.alt = "Calendar Options";
 
-  const addTaskPriorityLabel = document.createElement("div");
-  addTaskPriorityLabel.classList.add("add-task", "priority", "label", "hidden");
+  const addTaskPriorityContainer = document.createElement("div");
+  addTaskPriorityContainer.classList.add(
+    "add-task",
+    "priority",
+    "label",
+    "hidden"
+  );
 
-  const addTaskPriorityDialog = createPriorityDialog();
+  const addTaskPriorityDialog = createPriorityDialog("add-task");
 
-  const addTaskPriority = document.createElement("img");
-  addTaskPriority.classList.add("add-task", "svg", "priority");
-  addTaskPriority.src = images["priority_flag_default"];
-  addTaskPriority.alt = "Priority Options";
+  const addTaskPriorityIcon = document.createElement("img");
+  addTaskPriorityIcon.classList.add("add-task", "svg", "priority");
+  addTaskPriorityIcon.src = images["priority_flag_default"];
+  addTaskPriorityIcon.alt = "Priority Options";
 
-  addTaskDateLabel.append(addTaskDate, addTaskDateInput);
-  addTaskPriorityLabel.append(addTaskPriority, addTaskPriorityDialog);
-  addTaskOptionsContainer.append(addTaskDateLabel, addTaskPriorityLabel);
+  addTaskDateLabel.append(addTaskDateIcon, addTaskDateInput);
+  addTaskPriorityContainer.append(addTaskPriorityIcon, addTaskPriorityDialog);
+  addTaskOptionsContainer.append(addTaskDateLabel, addTaskPriorityContainer);
   addTaskBarContainer.append(addTaskBar, addTaskOptionsContainer);
 
   // Event Listeners
@@ -382,15 +386,15 @@ function createAddTaskBar() {
   // remove pseudo-focus state on date-picker close and refocus the task bar
   addTaskDateInput.addEventListener("blur", () => {
     if (addTaskDateInput.value != "")
-      addTaskDate.src = images["calendar_options_selected"];
-    else addTaskDate.src = images["calendar_options_default"];
+      addTaskDateIcon.src = images["calendar_options_selected"];
+    else addTaskDateIcon.src = images["calendar_options_default"];
 
     addTaskBar.classList.remove("focus");
     addTaskBar.focus();
   });
 
   // same as date picker logic
-  addTaskPriorityLabel.addEventListener("mousedown", (e) => {
+  addTaskPriorityContainer.addEventListener("mousedown", (e) => {
     e.preventDefault();
     addTaskPriorityDialog.show();
     addTaskPriorityDialog.focus();
@@ -405,7 +409,14 @@ function createAddTaskBar() {
     addTaskBar.classList.remove("focus");
     addTaskBar.focus();
     // if timeout is not used, the value of the priority will not be read correctly
-    setTimeout(changePriority, 0);
+    setTimeout(() => {
+      const priority = Number(
+        addTaskPriorityContainer.querySelector(
+          '.priority-picker input[name="priority"]:checked'
+        ).value
+      );
+      addTaskPriorityIcon.src = changePriorityIcon(priority);
+    }, 0);
   });
 
   // toggles the icons on input focus or unfocus
@@ -413,7 +424,7 @@ function createAddTaskBar() {
     if (addTaskOptionsContainer.classList.contains("hidden")) {
       addTaskOptionsContainer.classList.remove("hidden");
       addTaskDateLabel.classList.remove("hidden");
-      addTaskPriorityLabel.classList.remove("hidden");
+      addTaskPriorityContainer.classList.remove("hidden");
     }
   });
 
@@ -432,21 +443,8 @@ function createAddTaskBar() {
     ) {
       addTaskOptionsContainer.classList.add("hidden");
       addTaskDateLabel.classList.add("hidden");
-      addTaskPriorityLabel.classList.add("hidden");
+      addTaskPriorityContainer.classList.add("hidden");
     }
-  };
-
-  const changePriority = function () {
-    const imgs = [
-      images["priority_flag_default"],
-      images["priority_flag_low"],
-      images["priority_flag_medium"],
-      images["priority_flag_high"],
-    ];
-    const priority = document.querySelector(
-      '.priority-picker input[name="priority"]:checked'
-    );
-    addTaskPriority.src = imgs[priority.value];
   };
 
   const resetForm = function () {
@@ -457,9 +455,14 @@ function createAddTaskBar() {
     now.setUTCHours(0, 0, 0);
     addTaskDateInput.value = now.toISOString().slice(0, 16);
     // reset calendar options icon
-    addTaskDate.src = images["calendar_options_default"];
+    addTaskDateIcon.src = images["calendar_options_default"];
     // reset priority flag icon
-    changePriority();
+    const priority = Number(
+      addTaskPriorityContainer.querySelector(
+        '.priority-picker input[name="priority"]:checked'
+      ).value
+    );
+    addTaskPriorityIcon.src = changePriorityIcon(priority);
   };
 
   const addNewTask = function () {
@@ -471,7 +474,7 @@ function createAddTaskBar() {
     const priority = addTaskPriorityDialog.querySelector(":checked").value;
     let useTime = false;
 
-    if (addTaskDate.src != images["calendar_options_default"]) {
+    if (addTaskDateIcon.src != images["calendar_options_default"]) {
       date = toDate(addTaskDateInput.value);
       const hour = date.getHours();
       const minute = date.getMinutes();
@@ -486,6 +489,47 @@ function createAddTaskBar() {
   };
 
   return addTaskBarContainer;
+}
+
+function createPriorityDialog(section) {
+  const dialog = document.createElement("dialog");
+  dialog.classList.add(section, "priority-picker");
+
+  const imgs = [
+    images["priority_flag_default"],
+    images["priority_flag_low"],
+    images["priority_flag_medium"],
+    images["priority_flag_high"],
+  ];
+  // 4 priority levels:
+  // High - 3, Medium - 2, Low - 1, None - 0
+  for (let i = imgs.length - 1; i >= 0; i--) {
+    const label = document.createElement("label");
+    const img = document.createElement("img");
+    img.src = imgs[i];
+    img.classList.add(section, "svg", "priority");
+    const radio = document.createElement("input");
+    radio.classList.add("hidden");
+    radio.setAttribute("type", "radio");
+    radio.setAttribute("name", "priority");
+    radio.setAttribute("id", `priority${i}`);
+    radio.setAttribute("value", i);
+    if (i == 0) radio.setAttribute("checked", "checked");
+    label.append(img, radio);
+    dialog.appendChild(label);
+  }
+
+  return dialog;
+}
+
+function changePriorityIcon(priority) {
+  const imgs = [
+    images["priority_flag_default"],
+    images["priority_flag_low"],
+    images["priority_flag_medium"],
+    images["priority_flag_high"],
+  ];
+  return imgs[priority];
 }
 
 function createTask(task) {
@@ -592,37 +636,6 @@ function displayNewTask() {
   tasksContainer.append(createTaskClickable(newTask), taskSeparator);
 }
 
-function createPriorityDialog() {
-  const dialog = document.createElement("dialog");
-  dialog.classList.add("add-task", "priority-picker");
-
-  const imgs = [
-    images["priority_flag_default"],
-    images["priority_flag_low"],
-    images["priority_flag_medium"],
-    images["priority_flag_high"],
-  ];
-  // 4 priority levels:
-  // High - 3, Medium - 2, Low - 1, None - 0
-  for (let i = imgs.length - 1; i >= 0; i--) {
-    const label = document.createElement("label");
-    const img = document.createElement("img");
-    img.src = imgs[i];
-    img.classList.add("add-task", "svg", "priority");
-    const radio = document.createElement("input");
-    radio.classList.add("hidden");
-    radio.setAttribute("type", "radio");
-    radio.setAttribute("name", "priority");
-    radio.setAttribute("id", `priority${i}`);
-    radio.setAttribute("value", i);
-    if (i == 0) radio.setAttribute("checked", "checked");
-    label.append(img, radio);
-    dialog.appendChild(label);
-  }
-
-  return dialog;
-}
-
 function showTaskSeparator(taskIdx) {
   const taskSeparator = document.querySelector(
     `.task.separator[data-task='${taskIdx}']`
@@ -678,24 +691,41 @@ function createViewTaskHeading(task) {
   const viewTaskDateContainer = document.createElement("label");
   viewTaskDateContainer.classList.add("view-task", "date", "container");
 
-  const viewTaskDueDateIcon = document.createElement("img");
-  viewTaskDueDateIcon.classList.add("view-task", "heading", "svg");
-  viewTaskDueDateIcon.src = images["calendar_icon_default"];
+  const viewTaskDateIcon = document.createElement("img");
+  viewTaskDateIcon.classList.add("view-task", "heading", "svg");
+  viewTaskDateIcon.src = images["calendar_icon_default"];
 
-  const viewTaskDueDate = document.createElement("span");
-  viewTaskDueDate.classList.add("view-task", "due-date");
+  const viewTaskDate = document.createElement("span");
+  viewTaskDate.classList.add("view-task", "due-date");
 
   const viewTaskDateInput = document.createElement("input");
   viewTaskDateInput.setAttribute("type", "datetime-local");
   viewTaskDateInput.classList.add("view-task", "date-picker");
 
+  const viewTaskPriorityContainer = document.createElement("div");
+  viewTaskPriorityContainer.classList.add("view-task", "priority", "container");
+
+  const viewTaskPriorityIcon = document.createElement("img");
+  viewTaskPriorityIcon.classList.add("view-task", "heading", "svg");
+  viewTaskPriorityIcon.src = changePriorityIcon(task.priority);
+  viewTaskPriorityIcon.alt = "Priority";
+
+  const viewTaskPriorityDialog = createPriorityDialog("view-task");
+
+  const moreDropdown = createTaskMoreDropdown();
+
   viewTaskDateContainer.append(
-    viewTaskDueDateIcon,
-    viewTaskDueDate,
+    viewTaskDateIcon,
+    viewTaskDate,
     viewTaskDateInput
   );
 
-  viewTaskDateContainer.addEventListener("mousedown", (e) => {
+  viewTaskPriorityContainer.append(
+    viewTaskPriorityIcon,
+    viewTaskPriorityDialog
+  );
+  // open date-picker
+  viewTaskDateContainer.addEventListener("click", (e) => {
     e.preventDefault();
     viewTaskDateInput.showPicker();
     viewTaskDateInput.focus();
@@ -728,37 +758,51 @@ function createViewTaskHeading(task) {
     else taskText.style.color = "#4872f9";
   });
 
-  const viewTaskPriority = document.createElement("img");
-  viewTaskPriority.classList.add("view-task", "heading", "svg");
-  viewTaskPriority.src = images["priority_flag_default"];
-  viewTaskPriority.alt = "Priority";
+  // open priority picker
+  viewTaskPriorityIcon.addEventListener("click", (e) => {
+    e.preventDefault();
+    viewTaskPriorityDialog.show();
+    viewTaskPriorityDialog.focus();
+  });
 
-  const moreDropdown = createTaskMoreDropdown();
+  viewTaskPriorityDialog.addEventListener("blur", () => {
+    viewTaskPriorityDialog.close();
+    // if timeout is not used, the value of the priority will not be read correctly
+    setTimeout(() => {
+      const priority = Number(
+        viewTaskPriorityContainer.querySelector(
+          '.priority-picker input[name="priority"]:checked'
+        ).value
+      );
+      viewTaskPriorityIcon.src = changePriorityIcon(priority);
+      savePriorityOnEdit();
+    }, 0);
+  });
 
   viewTaskHeadingContainer.append(
     checkboxLabel,
     verticalSeparator,
     viewTaskDateContainer,
-    viewTaskPriority,
+    viewTaskPriorityContainer,
     moreDropdown.button,
     moreDropdown.dropdown
   );
 
   const displayDueDate = function (dueDate, useTime) {
     if (dueDate) {
-      viewTaskDueDateIcon.src = images["calendar_icon_active"];
-      viewTaskDueDate.style.color = "#4872f9";
-      viewTaskDueDate.textContent = dueDate.toDateString();
+      viewTaskDateIcon.src = images["calendar_icon_active"];
+      viewTaskDate.style.color = "#4872f9";
+      viewTaskDate.textContent = dueDate.toDateString();
       if (useTime)
-        viewTaskDueDate.textContent += ", " + dueDate.toLocaleTimeString();
+        viewTaskDate.textContent += ", " + dueDate.toLocaleTimeString();
       if (isBefore(dueDate, new Date())) {
-        viewTaskDueDate.style.color = "#c30000";
-        viewTaskDueDateIcon.src = images["calendar_icon_late"];
+        viewTaskDate.style.color = "#c30000";
+        viewTaskDateIcon.src = images["calendar_icon_late"];
       }
     } else {
-      viewTaskDueDateIcon.src = images["calendar_icon_default"];
-      viewTaskDueDate.style.color = "#858585";
-      viewTaskDueDate.textContent = "Due Date";
+      viewTaskDateIcon.src = images["calendar_icon_default"];
+      viewTaskDate.style.color = "#858585";
+      viewTaskDate.textContent = "Due Date";
     }
   };
 
@@ -856,6 +900,20 @@ function saveTaskOnEdit(viewTaskSection) {
 
     lists[listIdx].tasks[taskIdx].desc = taskDesc.textContent;
   });
+}
+
+function savePriorityOnEdit() {
+  const listIdx = getListIdx();
+  const taskIdx = getTaskIdx();
+
+  const task = App.getLists()[listIdx].tasks[taskIdx];
+  const priority = Number(
+    document.querySelector(".view-task.priority-picker input:checked").value
+  );
+  task.priority = priority;
+
+  const taskContainer = document.querySelector(".task.active");
+  taskContainer.dataset.priority = priority;
 }
 
 function createAddListModal() {
