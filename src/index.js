@@ -15,7 +15,7 @@ function main() {
       "boop",
       "dfsfsdfsfsdfserwerwe",
       new Date(2024, 7, 17),
-      false,
+      true,
       0,
       true
     ),

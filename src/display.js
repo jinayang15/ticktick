@@ -345,26 +345,7 @@ function createAddTaskBar() {
   // add new task when submitted
   addTaskBarContainer.addEventListener("submit", (e) => {
     e.preventDefault();
-    const listIdx = document.getElementById("tasks-section").dataset.list;
-    const list = App.getLists()[listIdx];
-    const taskIdx = list.tasks.length;
-    const name = addTaskBar.value;
-    let date = addTaskDateInput.value;
-    const priority = addTaskPriorityDialog.querySelector(":checked").value;
-    let useTime = false;
-
-    if (addTaskDate.src != images["calendar_options_default"]) {
-      date = toDate(addTaskDateInput.value);
-      const hour = date.getHours();
-      const minute = date.getMinutes();
-      useTime = hour != 0 || minute != 0;
-    } else {
-      date = null;
-    }
-    const task = new Task(taskIdx, name, "", date, useTime, priority, false);
-    list.addTask(task);
-    displayNewTask();
-    resetForm();
+    addNewTask();
   });
 
   // pressing on the icon shows the date-picker
@@ -422,6 +403,7 @@ function createAddTaskBar() {
     setTimeout(hideAddTaskBarIcons, 0);
   });
 
+  // named functions
   const hideAddTaskBarIcons = function () {
     // hide icons only if no values are in the task bar
     if (
@@ -460,6 +442,30 @@ function createAddTaskBar() {
     // reset priority flag icon
     changePriority();
   };
+
+  const addNewTask = function () {
+    const listIdx = document.getElementById("tasks-section").dataset.list;
+    const list = App.getLists()[listIdx];
+    const taskIdx = list.tasks.length;
+    const name = addTaskBar.value;
+    let date = addTaskDateInput.value;
+    const priority = addTaskPriorityDialog.querySelector(":checked").value;
+    let useTime = false;
+
+    if (addTaskDate.src != images["calendar_options_default"]) {
+      date = toDate(addTaskDateInput.value);
+      const hour = date.getHours();
+      const minute = date.getMinutes();
+      useTime = hour != 0 || minute != 0;
+    } else {
+      date = null;
+    }
+    const task = new Task(taskIdx, name, "", date, useTime, priority, false);
+    list.addTask(task);
+    displayNewTask();
+    resetForm();
+  };
+
   return addTaskBarContainer;
 }
 
@@ -579,7 +585,7 @@ function createPriorityDialog() {
   ];
   // 4 priority levels:
   // High - 3, Medium - 2, Low - 1, None - 0
-  for (let i = 3; i >= 0; i--) {
+  for (let i = imgs.length - 1; i >= 0; i--) {
     const label = document.createElement("label");
     const img = document.createElement("img");
     img.src = imgs[i];
@@ -623,10 +629,11 @@ function disableActiveTask() {
 export function initViewTaskSection(task) {
   const viewTaskSection = document.getElementById("view-task-section");
   viewTaskSection.dataset.task = task.idx;
+  viewTaskSection.dataset.priority = task.priority;
   const horizontalSeparator = document.createElement("hr");
   horizontalSeparator.classList.add("horizontal", "view-task", "separator");
   viewTaskSection.append(
-    createViewTaskHeading(task.dueDate),
+    createViewTaskHeading(task),
     horizontalSeparator,
     createViewTaskBody(task.name, task.desc)
   );
@@ -634,7 +641,7 @@ export function initViewTaskSection(task) {
   linkCheckboxes();
 }
 
-function createViewTaskHeading(dueDate) {
+function createViewTaskHeading(task) {
   const viewTaskHeadingContainer = document.createElement("div");
   viewTaskHeadingContainer.classList.add("view-task", "heading", "container");
 
@@ -649,22 +656,53 @@ function createViewTaskHeading(dueDate) {
   const verticalSeparator = document.createElement("hr");
   verticalSeparator.classList.add("vertical", "view-task", "separator");
 
-  const viewTaskDateContainer = document.createElement("span");
+  const viewTaskDateContainer = document.createElement("label");
   viewTaskDateContainer.classList.add("view-task", "date", "container");
 
   const viewTaskDueDateIcon = document.createElement("img");
   viewTaskDueDateIcon.classList.add("view-task", "heading", "svg");
-  viewTaskDueDateIcon.src = images["calendar_icon"];
+  viewTaskDueDateIcon.src = images["calendar_icon_default"];
 
   const viewTaskDueDate = document.createElement("span");
   viewTaskDueDate.classList.add("view-task", "due-date");
-  try {
-    viewTaskDueDate.textContent = dueDate.toDateString();
-  } catch (error) {
-    viewTaskDueDate.textContent = "Due Date";
+  if (task.dueDate) {
+    viewTaskDueDateIcon.src = images["calendar_icon_active"];
+    viewTaskDueDate.style.color = "#4872f9";
+    viewTaskDueDate.textContent = task.dueDate.toDateString();
+    if (task.useTime)
+      viewTaskDueDate.textContent += ", " + task.dueDate.toLocaleTimeString();
+    if (isBefore(task.dueDate, new Date())) {
+      viewTaskDueDate.style.color = "#c30000";
+      viewTaskDueDateIcon.src = images["calendar_icon_late"];
+    }
+  } else viewTaskDueDate.textContent = "Due Date";
+
+  const viewTaskDateInput = document.createElement("input");
+  viewTaskDateInput.setAttribute("type", "datetime-local");
+  viewTaskDateInput.classList.add("view-task", "date-picker");
+  if (task.dueDate) {
+    // convert to milliseconds
+    const offset = new Date().getTimezoneOffset() * 60 * 1000;
+    // need to adjust time to match local time
+    const adjustedTime = new Date(task.dueDate - offset);
+    viewTaskDateInput.value = adjustedTime.toISOString().slice(0, 16);
+  } else {
+    let now = new Date();
+    now.setUTCHours(0, 0, 0);
+    viewTaskDateInput.value = now.toISOString().slice(0, 16);
   }
 
-  viewTaskDateContainer.append(viewTaskDueDateIcon, viewTaskDueDate);
+  viewTaskDateContainer.append(
+    viewTaskDueDateIcon,
+    viewTaskDueDate,
+    viewTaskDateInput
+  );
+
+  viewTaskDateContainer.addEventListener("mousedown", (e) => {
+    e.preventDefault();
+    viewTaskDateInput.showPicker();
+    viewTaskDateInput.focus();
+  });
 
   const viewTaskPriority = document.createElement("img");
   viewTaskPriority.classList.add("view-task", "heading", "svg");

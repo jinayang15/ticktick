@@ -261,7 +261,7 @@ hr.vertical {
   border: 0;
 }
 
-.add-task.date-picker {
+.date-picker {
   position: absolute;
   width: 0;
   height: 0;
@@ -453,11 +453,12 @@ label input:checked ~ .checkmark {
   margin: 0 0.5rem;
 }
 
-.view-task.heading.container label {
+.view-task.heading.container label:has(.checkbox) {
   margin: 0;
 }
 
 .view-task.date.container {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -473,6 +474,10 @@ label input:checked ~ .checkmark {
   font-size: 0.8rem;
   color: var(--grey);
   padding-right: 0.25rem;
+}
+
+.view-task.date-picker {
+  top: 100%;
 }
 
 .view-task.body.container {
