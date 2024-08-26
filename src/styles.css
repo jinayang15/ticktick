@@ -143,7 +143,8 @@ hr.vertical {
   overflow-x: hidden;
 }
 
-.tasks.more-dropdown {
+.tasks.more-dropdown,
+.view-task.more-dropdown {
   position: absolute;
   z-index: 999;
   left: 100%;
@@ -424,40 +425,54 @@ label input:checked ~ .checkmark {
   border-color: transparent;
 }
 
-.view-task.header.container {
+.view-task.heading.container {
   width: 100%;
   display: flex;
   align-items: center;
-  padding: 1rem;
+  padding: 0.75rem 1rem;
+  position: relative;
 }
 
 .view-task.svg {
   display: inline;
-  width: 20px;
+  width: 24px;
   height: auto;
+  padding: 2px;
+}
+
+.heading.container > .view-task.svg:last-of-type {
+  margin-left: 0.25rem;
+}
+
+.heading.container > .view-task.svg:hover {
+  background-color: var(--off-white);
+  border-radius: 4px;
 }
 
 .vertical.view-task.separator {
   margin: 0 0.5rem;
 }
 
-.view-task.header.container label {
+.view-task.heading.container label {
   margin: 0;
 }
 
-.view-task.date {
+.view-task.date.container {
   display: flex;
   align-items: center;
   gap: 4px;
+  margin-right: auto;
+}
+
+.view-task.date.container:hover {
+  background-color: var(--off-white);
+  border-radius: 4px;
 }
 
 .view-task.due-date {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: var(--grey);
-}
-
-.view-task.header.svg:last-child {
-  margin-left: auto;
+  padding-right: 0.25rem;
 }
 
 .view-task.body.container {

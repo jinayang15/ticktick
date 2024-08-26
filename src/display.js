@@ -160,15 +160,26 @@ export function initTasksSection(list) {
 
   const tasksContainer = document.createElement("div");
   tasksContainer.classList.add("tasks", "container");
-
-  const taskSeparator = document.createElement("hr");
-  taskSeparator.classList.add("horizontal", "task", "separator");
+  tasksContainer.id = "tasks-container";
 
   tasksSection.append(
     createTaskSectionHeading(list.name),
     createAddTaskBar(),
     tasksContainer
   );
+  addToTasks();
+  addMenuToggle();
+}
+
+function addToTasks() {
+  const listIdx = Number(document.getElementById("tasks-section").dataset.list);
+  const list = App.getLists()[listIdx];
+
+  const taskSeparator = document.createElement("hr");
+  taskSeparator.classList.add("horizontal", "task", "separator");
+
+  const tasksContainer = document.getElementById("tasks-container");
+
   for (let i = 0; i < list.tasks.length; i++) {
     list.tasks[i].idx = i;
     taskSeparator.dataset.task = i;
@@ -177,8 +188,6 @@ export function initTasksSection(list) {
       taskSeparator.cloneNode(true)
     );
   }
-
-  addMenuToggle();
 }
 
 export function addMenuToggle() {
@@ -222,32 +231,37 @@ function createTaskSectionHeading(listName) {
   return tasksHeadingContainer;
 }
 
-function createListMoreDropdown() {
+function createMoreDropdown(sectionName) {
   const moreButton = document.createElement("img");
-  moreButton.classList.add("tasks", "heading", "svg");
+  moreButton.classList.add(sectionName, "heading", "svg");
   moreButton.src = images["more_hori"];
   moreButton.alt = "More";
 
   const moreDropdown = document.createElement("dialog");
-  moreDropdown.classList.add("tasks", "more-dropdown");
-
-  // more dropdown items
-  const moreDropdownDelete = createListMoreItem(
-    "delete",
-    "Delete",
-    "Delete List"
-  );
-
-  moreDropdown.append(moreDropdownDelete);
+  moreDropdown.classList.add(sectionName, "more-dropdown");
 
   moreButton.addEventListener("click", () => {
     moreDropdown.show();
     moreDropdown.focus();
   });
-
   moreDropdown.addEventListener("blur", () => {
     moreDropdown.close();
   });
+
+  return { button: moreButton, dropdown: moreDropdown };
+}
+
+function createListMoreDropdown() {
+  const moreStuff = createMoreDropdown("tasks");
+
+  const moreButton = moreStuff.button;
+
+  const moreDropdown = moreStuff.dropdown;
+
+  // more dropdown items
+  const moreDropdownDelete = createMoreItem("delete", "Delete", "Delete List");
+
+  moreDropdown.append(moreDropdownDelete);
 
   // dropdown item eventlisteners
   moreDropdownDelete.addEventListener("click", () => {
@@ -258,7 +272,7 @@ function createListMoreDropdown() {
   return { button: moreButton, dropdown: moreDropdown };
 }
 
-function createListMoreItem(name, text, alt) {
+function createMoreItem(name, text, alt) {
   const moreDropdownItem = document.createElement("div");
   moreDropdownItem.classList.add("more-dropdown", "item", "container", name);
 
@@ -541,7 +555,7 @@ function createTaskClickable(task) {
 
 function displayNewTask() {
   const tasksSection = document.getElementById("tasks-section");
-  const tasksContainer = tasksSection.querySelector(".tasks.container");
+  const tasksContainer = document.getElementById("tasks-container");
   const listIdx = tasksSection.dataset.list;
   const list = App.getLists()[listIdx];
   const newTask = list.tasks[list.tasks.length - 1];
@@ -612,7 +626,7 @@ export function initViewTaskSection(task) {
   const horizontalSeparator = document.createElement("hr");
   horizontalSeparator.classList.add("horizontal", "view-task", "separator");
   viewTaskSection.append(
-    createViewTaskHeader(task.dueDate),
+    createViewTaskHeading(task.dueDate),
     horizontalSeparator,
     createViewTaskBody(task.name, task.desc)
   );
@@ -620,9 +634,9 @@ export function initViewTaskSection(task) {
   linkCheckboxes();
 }
 
-function createViewTaskHeader(dueDate) {
-  const viewTaskHeaderContainer = document.createElement("div");
-  viewTaskHeaderContainer.classList.add("view-task", "header", "container");
+function createViewTaskHeading(dueDate) {
+  const viewTaskHeadingContainer = document.createElement("div");
+  viewTaskHeadingContainer.classList.add("view-task", "heading", "container");
 
   const checkboxLabel = document.createElement("label");
   const checkbox = document.createElement("input");
@@ -639,7 +653,7 @@ function createViewTaskHeader(dueDate) {
   viewTaskDateContainer.classList.add("view-task", "date", "container");
 
   const viewTaskDueDateIcon = document.createElement("img");
-  viewTaskDueDateIcon.classList.add("view-task", "header", "svg");
+  viewTaskDueDateIcon.classList.add("view-task", "heading", "svg");
   viewTaskDueDateIcon.src = images["calendar_icon"];
 
   const viewTaskDueDate = document.createElement("span");
@@ -653,18 +667,43 @@ function createViewTaskHeader(dueDate) {
   viewTaskDateContainer.append(viewTaskDueDateIcon, viewTaskDueDate);
 
   const viewTaskPriority = document.createElement("img");
-  viewTaskPriority.classList.add("view-task", "header", "svg");
+  viewTaskPriority.classList.add("view-task", "heading", "svg");
   viewTaskPriority.src = images["priority_flag_default"];
   viewTaskPriority.alt = "Priority";
 
-  viewTaskHeaderContainer.append(
+  const moreDropdown = createTaskMoreDropdown();
+
+  viewTaskHeadingContainer.append(
     checkboxLabel,
     verticalSeparator,
     viewTaskDateContainer,
-    viewTaskPriority
+    viewTaskPriority,
+    moreDropdown.button,
+    moreDropdown.dropdown
   );
 
-  return viewTaskHeaderContainer;
+  return viewTaskHeadingContainer;
+}
+
+function createTaskMoreDropdown() {
+  const moreStuff = createMoreDropdown("view-task");
+
+  const moreButton = moreStuff.button;
+
+  const moreDropdown = moreStuff.dropdown;
+
+  // more dropdown items
+  const moreDropdownDelete = createMoreItem("delete", "Delete", "Delete List");
+
+  moreDropdown.append(moreDropdownDelete);
+
+  // dropdown item eventlisteners
+  moreDropdownDelete.addEventListener("click", () => {
+    deleteTask();
+    moreDropdown.open = false;
+  });
+
+  return { button: moreButton, dropdown: moreDropdown };
 }
 
 function createViewTaskBody(name, desc) {
@@ -686,6 +725,17 @@ function createViewTaskBody(name, desc) {
   viewTaskBodyContainer.append(viewTaskName, viewTaskDescription);
 
   return viewTaskBodyContainer;
+}
+
+function deleteTask() {
+  const listIdx = Number(document.getElementById("tasks-section").dataset.list);
+  const taskIdx = Number(
+    document.getElementById("view-task-section").dataset.task
+  );
+  App.getLists()[listIdx].deleteTask(taskIdx);
+  clearSection("view-task-section");
+  clearSection("tasks-container");
+  addToTasks();
 }
 
 function saveTaskOnEdit(viewTaskSection) {
@@ -788,7 +838,7 @@ function linkCheckboxes() {
     `.container.active .checkbox`
   );
   const viewTaskCheckbox = viewTaskSection.querySelector(
-    ".header.container .checkbox"
+    ".heading.container .checkbox"
   );
   const listIdx = Number(tasksSection.dataset.list);
   const taskIdx = Number(viewTaskSection.dataset.task);
