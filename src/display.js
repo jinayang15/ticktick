@@ -3,6 +3,7 @@ import {
   toDate,
   differenceInCalendarDays,
   formatDistanceToNow,
+  setDate,
 } from "date-fns";
 import { Task, List } from "./class";
 import * as App from "./app";
@@ -24,6 +25,24 @@ function importAllAssets(r) {
 export function clearSection(id) {
   const section = document.getElementById(id);
   section.textContent = "";
+}
+
+function getListIdx() {
+  const tasksSection = document.getElementById("tasks-section");
+  if (tasksSection) {
+    const listIdx = Number(tasksSection.dataset.list);
+    return listIdx;
+  }
+  return null;
+}
+
+function getTaskIdx() {
+  const viewTaskSection = document.getElementById("view-task-section");
+  if (viewTaskSection) {
+    const taskIdx = Number(viewTaskSection.dataset.task);
+    return taskIdx;
+  }
+  return null;
 }
 
 export function initCategoriesSection() {
@@ -147,7 +166,7 @@ function disableActiveList() {
 }
 
 function deleteList() {
-  const listIdx = Number(document.getElementById("tasks-section").dataset.list);
+  const listIdx = getListIdx();
   App.deleteList(listIdx);
   clearSection("tasks-section");
   clearSection("group-by-list");
@@ -172,7 +191,7 @@ export function initTasksSection(list) {
 }
 
 function addToTasks() {
-  const listIdx = Number(document.getElementById("tasks-section").dataset.list);
+  const listIdx = getListIdx();
   const list = App.getLists()[listIdx];
 
   const taskSeparator = document.createElement("hr");
@@ -444,7 +463,7 @@ function createAddTaskBar() {
   };
 
   const addNewTask = function () {
-    const listIdx = document.getElementById("tasks-section").dataset.list;
+    const listIdx = getListIdx();
     const list = App.getLists()[listIdx];
     const taskIdx = list.tasks.length;
     const name = addTaskBar.value;
@@ -495,8 +514,9 @@ function createTask(task) {
   taskDueDate.classList.add("task", "due-date");
 
   taskName.textContent = task.name;
-  taskDueDate.textContent = displayTaskDueDate(task);
+  taskDueDate.textContent = displayTaskDueDate(task.dueDate, task.useTime);
   if (isBefore(task.dueDate, new Date())) taskDueDate.style.color = "#c30000";
+  else taskDueDate.style.color = "#4872f9";
 
   taskDetailsContainer.append(taskName, taskDueDate);
   taskContainer.append(taskCheckboxLabel, taskDetailsContainer);
@@ -504,32 +524,32 @@ function createTask(task) {
   return taskContainer;
 }
 
-function displayTaskDueDate(task) {
+function displayTaskDueDate(dueDate, useTime) {
   let output = "";
-  if (task.dueDate) {
-    const numDaysUntil = differenceInCalendarDays(task.dueDate, new Date());
+  if (dueDate) {
+    const numDaysUntil = differenceInCalendarDays(dueDate, new Date());
     if (numDaysUntil < 0) {
       if (numDaysUntil == -1) {
-        if (task.useTime) {
-          output = formatDistanceToNow(task.dueDate) + " overdue";
+        if (useTime) {
+          output = formatDistanceToNow(dueDate) + " overdue";
           // capitalize first character
           output = output.charAt(0).toUpperCase() + output.slice(1);
         } else output = "Yesterday";
       } else output = Math.abs(numDaysUntil) + " days overdue";
     } else if (numDaysUntil > 0) {
       if (numDaysUntil == 1) {
-        if (task.useTime) {
-          output = formatDistanceToNow(task.dueDate) + " left";
+        if (useTime) {
+          output = formatDistanceToNow(dueDate) + " left";
           // capitalize first character
           output = output.charAt(0).toUpperCase() + output.slice(1);
         } else output = "Tomorrow";
       } else output = numDaysUntil + " days left";
     } else {
-      if (task.useTime) {
-        output = formatDistanceToNow(task.dueDate);
+      if (useTime) {
+        output = formatDistanceToNow(dueDate);
         // capitalize first letter
         output = output.charAt(0).toUpperCase() + output.slice(1);
-        if (isBefore(task.dueDate, new Date())) output += " overdue";
+        if (isBefore(dueDate, new Date())) output += " overdue";
         else output += " left";
       } else output = "Today";
     }
@@ -560,9 +580,8 @@ function createTaskClickable(task) {
 }
 
 function displayNewTask() {
-  const tasksSection = document.getElementById("tasks-section");
   const tasksContainer = document.getElementById("tasks-container");
-  const listIdx = tasksSection.dataset.list;
+  const listIdx = getListIdx();
   const list = App.getLists()[listIdx];
   const newTask = list.tasks[list.tasks.length - 1];
 
@@ -665,32 +684,10 @@ function createViewTaskHeading(task) {
 
   const viewTaskDueDate = document.createElement("span");
   viewTaskDueDate.classList.add("view-task", "due-date");
-  if (task.dueDate) {
-    viewTaskDueDateIcon.src = images["calendar_icon_active"];
-    viewTaskDueDate.style.color = "#4872f9";
-    viewTaskDueDate.textContent = task.dueDate.toDateString();
-    if (task.useTime)
-      viewTaskDueDate.textContent += ", " + task.dueDate.toLocaleTimeString();
-    if (isBefore(task.dueDate, new Date())) {
-      viewTaskDueDate.style.color = "#c30000";
-      viewTaskDueDateIcon.src = images["calendar_icon_late"];
-    }
-  } else viewTaskDueDate.textContent = "Due Date";
 
   const viewTaskDateInput = document.createElement("input");
   viewTaskDateInput.setAttribute("type", "datetime-local");
   viewTaskDateInput.classList.add("view-task", "date-picker");
-  if (task.dueDate) {
-    // convert to milliseconds
-    const offset = new Date().getTimezoneOffset() * 60 * 1000;
-    // need to adjust time to match local time
-    const adjustedTime = new Date(task.dueDate - offset);
-    viewTaskDateInput.value = adjustedTime.toISOString().slice(0, 16);
-  } else {
-    let now = new Date();
-    now.setUTCHours(0, 0, 0);
-    viewTaskDateInput.value = now.toISOString().slice(0, 16);
-  }
 
   viewTaskDateContainer.append(
     viewTaskDueDateIcon,
@@ -702,6 +699,33 @@ function createViewTaskHeading(task) {
     e.preventDefault();
     viewTaskDateInput.showPicker();
     viewTaskDateInput.focus();
+  });
+
+  // update date display on date change
+  viewTaskDateInput.addEventListener("blur", () => {
+    const listIdx = getListIdx();
+    const taskIdx = getTaskIdx();
+    const task = App.getLists()[listIdx].tasks[taskIdx];
+    let dueDate;
+    let useTime = false;
+    if (viewTaskDateInput.value != "") {
+      dueDate = toDate(viewTaskDateInput.value);
+      const hour = dueDate.getHours();
+      const minute = dueDate.getMinutes();
+      useTime = hour != 0 || minute != 0;
+    } else {
+      dueDate = null;
+    }
+    task.dueDate = dueDate;
+    task.useTime = useTime;
+    displayDueDate(dueDate, useTime);
+
+    const taskText = document.querySelector(
+      "#tasks-section .task.active .due-date"
+    );
+    taskText.textContent = displayTaskDueDate(dueDate, useTime);
+    if (isBefore(dueDate, new Date())) taskText.style.color = "#c30000";
+    else taskText.style.color = "#4872f9";
   });
 
   const viewTaskPriority = document.createElement("img");
@@ -719,6 +743,41 @@ function createViewTaskHeading(task) {
     moreDropdown.button,
     moreDropdown.dropdown
   );
+
+  const displayDueDate = function (dueDate, useTime) {
+    if (dueDate) {
+      viewTaskDueDateIcon.src = images["calendar_icon_active"];
+      viewTaskDueDate.style.color = "#4872f9";
+      viewTaskDueDate.textContent = dueDate.toDateString();
+      if (useTime)
+        viewTaskDueDate.textContent += ", " + dueDate.toLocaleTimeString();
+      if (isBefore(dueDate, new Date())) {
+        viewTaskDueDate.style.color = "#c30000";
+        viewTaskDueDateIcon.src = images["calendar_icon_late"];
+      }
+    } else {
+      viewTaskDueDateIcon.src = images["calendar_icon_default"];
+      viewTaskDueDate.style.color = "#858585";
+      viewTaskDueDate.textContent = "Due Date";
+    }
+  };
+
+  const setDatePickerValue = function (dueDate) {
+    if (dueDate) {
+      // convert to milliseconds
+      const offset = new Date().getTimezoneOffset() * 60 * 1000;
+      // need to adjust time to match local time
+      const adjustedTime = new Date(dueDate - offset);
+      viewTaskDateInput.value = adjustedTime.toISOString().slice(0, 16);
+    } else {
+      let now = new Date();
+      now.setUTCHours(0, 0, 0);
+      viewTaskDateInput.value = now.toISOString().slice(0, 16);
+    }
+  };
+
+  displayDueDate(task.dueDate, task.useTime);
+  setDatePickerValue(task.dueDate);
 
   return viewTaskHeadingContainer;
 }
@@ -766,10 +825,8 @@ function createViewTaskBody(name, desc) {
 }
 
 function deleteTask() {
-  const listIdx = Number(document.getElementById("tasks-section").dataset.list);
-  const taskIdx = Number(
-    document.getElementById("view-task-section").dataset.task
-  );
+  const listIdx = getListIdx();
+  const taskIdx = getTaskIdx();
   App.getLists()[listIdx].deleteTask(taskIdx);
   clearSection("view-task-section");
   clearSection("tasks-container");
@@ -781,10 +838,9 @@ function saveTaskOnEdit(viewTaskSection) {
   const taskDesc = viewTaskSection.querySelector(".description");
 
   taskName.addEventListener("input", () => {
-    const tasksSection = document.getElementById("tasks-section");
-    const listIdx = Number(tasksSection.dataset.list);
-    const taskIdx = Number(viewTaskSection.dataset.task);
-    const clickableTaskName = tasksSection.querySelector(
+    const listIdx = getListIdx();
+    const taskIdx = getTaskIdx();
+    const clickableTaskName = document.querySelector(
       `.task.container[data-task='${taskIdx}'] .name`
     );
 
@@ -794,9 +850,8 @@ function saveTaskOnEdit(viewTaskSection) {
   });
 
   taskDesc.addEventListener("input", () => {
-    const tasksSection = document.getElementById("tasks-section");
-    const listIdx = Number(tasksSection.dataset.list);
-    const taskIdx = Number(viewTaskSection.dataset.task);
+    const listIdx = getListIdx();
+    const taskIdx = getTaskIdx();
     const lists = App.getLists();
 
     lists[listIdx].tasks[taskIdx].desc = taskDesc.textContent;
@@ -870,16 +925,14 @@ function createAddListModal() {
 
 // toggling task section checkbox also toggle view task section checkbox
 function linkCheckboxes() {
-  const tasksSection = document.getElementById("tasks-section");
-  const viewTaskSection = document.getElementById("view-task-section");
-  const taskCheckbox = tasksSection.querySelector(
-    `.container.active .checkbox`
+  const taskCheckbox = document.querySelector(
+    `.task.container.active .checkbox`
   );
-  const viewTaskCheckbox = viewTaskSection.querySelector(
-    ".heading.container .checkbox"
+  const viewTaskCheckbox = document.querySelector(
+    ".view-task.heading.container .checkbox"
   );
-  const listIdx = Number(tasksSection.dataset.list);
-  const taskIdx = Number(viewTaskSection.dataset.task);
+  const listIdx = getListIdx();
+  const taskIdx = getTaskIdx();
 
   viewTaskCheckbox.checked = taskCheckbox.checked;
   taskCheckbox.addEventListener("click", () => {
