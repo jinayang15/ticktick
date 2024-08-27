@@ -1,4 +1,6 @@
-export class Task {
+import * as App from "./app";
+
+export default class Task {
   constructor(
     idx,
     name,
@@ -58,7 +60,6 @@ export class Task {
   set complete(complete) {
     this._complete = complete;
   }
-
   toString() {
     return `${this.name} ${this.dueDate.toDateString()}`;
   }
@@ -69,39 +70,5 @@ export class Task {
     }
     output += `\n${this.desc}\nPriority: ${this.priority}\nComplete: ${this.complete}`;
     return output;
-  }
-}
-
-export class List {
-  constructor(idx, name, tasks = []) {
-    this.idx = idx;
-    this.name = name;
-    this.tasks = tasks;
-  }
-  get idx() {
-    return this._idx;
-  }
-  set idx(idx) {
-    this._idx = idx;
-  }
-  get name() {
-    return this._name;
-  }
-  set name(name) {
-    this._name = name;
-  }
-  get tasks() {
-    return this._tasks;
-  }
-  set tasks(tasks) {
-    this._tasks = tasks;
-  }
-  addTask(...tasks) {
-    for (const task of tasks) {
-      this._tasks.push(task);
-    }
-  }
-  deleteTask(index) {
-    this._tasks.splice(index, 1);
   }
 }

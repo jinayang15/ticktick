@@ -4,7 +4,8 @@ import {
   differenceInCalendarDays,
   formatDistanceToNow,
 } from "date-fns";
-import { Task, List } from "./class";
+import List from "./list";
+import Task from "./task";
 import * as App from "./app";
 
 const images = importAllAssets(
@@ -44,6 +45,17 @@ function getTaskIdx() {
   return null;
 }
 
+function getList(listIdx) {
+  let list;
+  if (listIdx >= 0) list = App.getLists()[listIdx];
+  else {
+    const autoLists = App.getAutoLists();
+    // adjust listIdx to get the index of the auto list
+    list = autoLists[listIdx + autoLists.length];
+  }
+  return list;
+}
+
 export function initCategoriesSection() {
   const categoriesSection = document.getElementById("categories-section");
   const hrSeparator = document.createElement("hr");
@@ -68,12 +80,31 @@ export function initCategoriesSection() {
 }
 
 function createGroupByPeriod() {
+  const todayListContainer = createGroupByItem(
+    "Today",
+    "calendar_view_day",
+    "period",
+    -3
+  );
+  const weekListContainer = createGroupByItem(
+    "Next 7 Days",
+    "calendar_view_week",
+    "period",
+    -2
+  );
+  const allListContainer = createGroupByItem(
+    "All Tasks",
+    "all_task_list",
+    "period",
+    -1
+  );
+
   const groupByPeriodContainer = document.createElement("div");
   groupByPeriodContainer.classList.add("group-by", "period", "container");
   groupByPeriodContainer.append(
-    createGroupByItem("Today", "calendar_view_day", "period"),
-    createGroupByItem("Next 7 Days", "calendar_view_week", "period"),
-    createGroupByItem("All Tasks", "all_task_list", "period")
+    makeListClickable(todayListContainer, App.getTodayList()),
+    makeListClickable(weekListContainer, App.getWeekList()),
+    makeListClickable(allListContainer, App.getAllList())
   );
   return groupByPeriodContainer;
 }
@@ -98,8 +129,15 @@ function addToGroupByList() {
   groupByListContainer.appendChild(groupByListHeading);
   const lists = App.getLists();
   for (let i = 0; i < lists.length; i++) {
-    lists[i].idx = i;
-    groupByListContainer.appendChild(createListClickable(lists[i]));
+    const list = lists[i];
+    list.idx = i;
+    const listContainer = createGroupByItem(
+      list.name,
+      "list_icon",
+      "list",
+      list.idx
+    );
+    groupByListContainer.appendChild(makeListClickable(listContainer, list));
   }
 }
 
@@ -131,13 +169,7 @@ function createGroupByItem(label, imgName, type, idx = -1) {
   return item;
 }
 
-function createListClickable(list) {
-  const listContainer = createGroupByItem(
-    list.name,
-    "list_icon",
-    "list",
-    list.idx
-  );
+function makeListClickable(listContainer, list) {
   listContainer.addEventListener("click", () => {
     clearSection("tasks-section");
     clearSection("view-task-section");
@@ -154,7 +186,13 @@ function displayNewListInCategories() {
     .querySelector(".group-by.list.container");
   const lists = App.getLists();
   const newList = lists[lists.length - 1];
-  groupByListContainer.appendChild(createListClickable(newList));
+  const listContainer = createGroupByItem(
+    newList.name,
+    "list_icon",
+    "list",
+    newList.idx
+  );
+  groupByListContainer.appendChild(makeListClickable(listContainer, newList));
 }
 
 function disableActiveList() {
@@ -191,7 +229,7 @@ export function initTasksSection(list) {
 
 function addToTasks() {
   const listIdx = getListIdx();
-  const list = App.getLists()[listIdx];
+  const list = getList(listIdx);
 
   const taskSeparator = document.createElement("hr");
   taskSeparator.classList.add("horizontal", "task", "separator");
@@ -271,16 +309,12 @@ function createMoreDropdown(sectionName) {
 
 function createListMoreDropdown() {
   const moreStuff = createMoreDropdown("tasks");
-
   const moreButton = moreStuff.button;
-
   const moreDropdown = moreStuff.dropdown;
 
   // more dropdown items
   const moreDropdownDelete = createMoreItem("delete", "Delete", "Delete List");
-
   moreDropdown.append(moreDropdownDelete);
-
   // dropdown item eventlisteners
   moreDropdownDelete.addEventListener("click", () => {
     deleteList();
@@ -467,7 +501,7 @@ function createAddTaskBar() {
 
   const addNewTask = function () {
     const listIdx = getListIdx();
-    const list = App.getLists()[listIdx];
+    const list = getList(listIdx);
     const taskIdx = list.tasks.length;
     const name = addTaskBar.value;
     let date = addTaskDateInput.value;
@@ -491,7 +525,7 @@ function createAddTaskBar() {
   return addTaskBarContainer;
 }
 
-function createPriorityDialog(section) {
+function createPriorityDialog(section, checked = 0) {
   const dialog = document.createElement("dialog");
   dialog.classList.add(section, "priority-picker");
 
@@ -514,7 +548,7 @@ function createPriorityDialog(section) {
     radio.setAttribute("name", "priority");
     radio.setAttribute("id", `priority${i}`);
     radio.setAttribute("value", i);
-    if (i == 0) radio.setAttribute("checked", "checked");
+    if (i == checked) radio.setAttribute("checked", "checked");
     label.append(img, radio);
     dialog.appendChild(label);
   }
@@ -626,7 +660,7 @@ function createTaskClickable(task) {
 function displayNewTask() {
   const tasksContainer = document.getElementById("tasks-container");
   const listIdx = getListIdx();
-  const list = App.getLists()[listIdx];
+  const list = getList(listIdx);
   const newTask = list.tasks[list.tasks.length - 1];
 
   const taskSeparator = document.createElement("hr");
@@ -710,7 +744,10 @@ function createViewTaskHeading(task) {
   viewTaskPriorityIcon.src = changePriorityIcon(task.priority);
   viewTaskPriorityIcon.alt = "Priority";
 
-  const viewTaskPriorityDialog = createPriorityDialog("view-task");
+  const viewTaskPriorityDialog = createPriorityDialog(
+    "view-task",
+    task.priority
+  );
 
   const moreDropdown = createTaskMoreDropdown();
 
@@ -735,7 +772,8 @@ function createViewTaskHeading(task) {
   viewTaskDateInput.addEventListener("blur", () => {
     const listIdx = getListIdx();
     const taskIdx = getTaskIdx();
-    const task = App.getLists()[listIdx].tasks[taskIdx];
+    const list = getList(listIdx);
+    const task = list.tasks[taskIdx];
     let dueDate;
     let useTime = false;
     if (viewTaskDateInput.value != "") {
@@ -828,16 +866,12 @@ function createViewTaskHeading(task) {
 
 function createTaskMoreDropdown() {
   const moreStuff = createMoreDropdown("view-task");
-
   const moreButton = moreStuff.button;
-
   const moreDropdown = moreStuff.dropdown;
-
   // more dropdown items
   const moreDropdownDelete = createMoreItem("delete", "Delete", "Delete List");
 
   moreDropdown.append(moreDropdownDelete);
-
   // dropdown item eventlisteners
   moreDropdownDelete.addEventListener("click", () => {
     deleteTask();
@@ -871,7 +905,10 @@ function createViewTaskBody(name, desc) {
 function deleteTask() {
   const listIdx = getListIdx();
   const taskIdx = getTaskIdx();
-  App.getLists()[listIdx].deleteTask(taskIdx);
+  const list = getList(listIdx);
+
+  list.deleteTask(taskIdx);
+
   clearSection("view-task-section");
   clearSection("tasks-container");
   addToTasks();
@@ -905,8 +942,8 @@ function saveTaskOnEdit(viewTaskSection) {
 function savePriorityOnEdit() {
   const listIdx = getListIdx();
   const taskIdx = getTaskIdx();
-
-  const task = App.getLists()[listIdx].tasks[taskIdx];
+  const list = getList(listIdx);
+  const task = list.tasks[taskIdx];
   const priority = Number(
     document.querySelector(".view-task.priority-picker input:checked").value
   );
@@ -991,14 +1028,15 @@ function linkCheckboxes() {
   );
   const listIdx = getListIdx();
   const taskIdx = getTaskIdx();
+  const list = getList(listIdx);
 
   viewTaskCheckbox.checked = taskCheckbox.checked;
   taskCheckbox.addEventListener("click", () => {
-    App.getLists()[listIdx].tasks[taskIdx].complete = taskCheckbox.checked;
+    list.tasks[taskIdx].complete = taskCheckbox.checked;
     viewTaskCheckbox.checked = !viewTaskCheckbox.checked;
   });
   viewTaskCheckbox.addEventListener("click", () => {
-    App.getLists()[listIdx].tasks[taskIdx].complete = viewTaskCheckbox.checked;
+    list.tasks[taskIdx].complete = viewTaskCheckbox.checked;
     taskCheckbox.checked = !taskCheckbox.checked;
   });
 }

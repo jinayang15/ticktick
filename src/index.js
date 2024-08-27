@@ -1,6 +1,6 @@
-import { Task, List } from "./class";
+import List from "./list";
+import Task from "./task";
 import * as App from "./app";
-import * as Logic from "./logic";
 import * as Display from "./display";
 import "./reset.css";
 import "./styles.css";

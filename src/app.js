@@ -1,10 +1,9 @@
-import { Task, List } from "./class";
+import List from "./list";
 
-const _defaultLists = [
-  new List(-1, "Today"),
-  new List(-2, "Next 7 Days"),
-  new List(-3, "All Tasks"),
-];
+const _todayList = new List(-3, "Today");
+const _weekList = new List(-2, "Next 7 Days");
+const _allList = new List(-1, "All Tasks");
+const _autoLists = [_todayList, _weekList, _allList];
 const _userLists = [];
 
 export function getLists() {
@@ -17,4 +16,25 @@ export function addList(...lists) {
 }
 export function deleteList(index) {
   _userLists.splice(index, 1);
+}
+
+export function getAutoLists() {
+  return _autoLists;
+}
+
+export function getTodayList() {
+  return _todayList;
+}
+
+export function getWeekList() {
+  return _weekList;
+}
+
+export function getAllList() {
+  return _allList;
+}
+
+export function autoSortTasks() {
+  // reset today and week list
+  c
 }
