@@ -1,9 +1,11 @@
 import List from "./list";
+import { differenceInCalendarDays } from "date-fns";
 
-const _todayList = new List(-3, "Today");
-const _weekList = new List(-2, "Next 7 Days");
-const _allList = new List(-1, "All Tasks");
-const _autoLists = [_todayList, _weekList, _allList];
+const _todayList = new List(-4, "Today");
+const _weekList = new List(-3, "Next 7 Days");
+const _allList = new List(-2, "All Tasks");
+const _completedList = new List(-1, "Completed");
+const _autoLists = [_todayList, _weekList, _allList, _completedList];
 const _userLists = [];
 
 export function getLists() {
@@ -34,7 +36,30 @@ export function getAllList() {
   return _allList;
 }
 
-export function autoSortTasks() {
-  // reset today and week list
-  c
+export function getCompletedList() {
+  return _completedList;
+}
+
+export function sortTasksIntoPresetLists() {
+  // reset today, week, and all list
+  _todayList.tasks = [];
+  _weekList.tasks = [];
+  _allList.tasks = [];
+  for (const list of _userLists) {
+    _allList.tasks = _allList.tasks.concat(list.tasks);
+  }
+  _todayList.tasks = _allList.tasks.filter((task, idx, array) => {
+    if (task.dueDate) {
+      const diff = differenceInCalendarDays(task.dueDate, new Date());
+      return diff <= 0;
+    }
+    return false;
+  });
+  _weekList.tasks = _allList.tasks.filter((task, idx, array) => {
+    if (task.dueDate) {
+      const diff = differenceInCalendarDays(task.dueDate, new Date());
+      return diff <= 7;
+    }
+    return false;
+  });
 }

@@ -142,10 +142,15 @@ function addToGroupByList() {
 }
 
 function createGroupByOther() {
+  const completedListContainer = createGroupByItem(
+    "Completed",
+    "checkbox_checked",
+    "other"
+  );
   const groupByOtherContainer = document.createElement("div");
   groupByOtherContainer.classList.add("group-by", "other", "container");
   groupByOtherContainer.append(
-    createGroupByItem("Completed", "checkbox_checked", "other")
+    makeListClickable(completedListContainer, App.getCompletedList())
   );
 
   return groupByOtherContainer;
@@ -218,11 +223,13 @@ export function initTasksSection(list) {
   tasksContainer.classList.add("tasks", "container");
   tasksContainer.id = "tasks-container";
 
-  tasksSection.append(
-    createTaskSectionHeading(list.name),
-    createAddTaskBar(),
-    tasksContainer
-  );
+  if (list.idx >= 0)
+    tasksSection.append(
+      createTaskSectionHeading(list),
+      createAddTaskBar(),
+      tasksContainer
+    );
+  else tasksSection.append(createTaskSectionHeading(list), tasksContainer);
   addToTasks();
   addMenuToggle();
 }
@@ -261,7 +268,7 @@ export function addMenuToggle() {
   });
 }
 
-function createTaskSectionHeading(listName) {
+function createTaskSectionHeading(list) {
   const tasksHeadingContainer = document.createElement("div");
   tasksHeadingContainer.classList.add("tasks", "section", "heading");
 
@@ -273,16 +280,13 @@ function createTaskSectionHeading(listName) {
 
   const tasksListName = document.createElement("span");
   tasksListName.classList.add("tasks", "heading", "text");
-  tasksListName.textContent = listName;
+  tasksListName.textContent = list.name;
 
-  const more = createListMoreDropdown();
-
-  tasksHeadingContainer.append(
-    menuToggle,
-    tasksListName,
-    more.button,
-    more.dropdown
-  );
+  tasksHeadingContainer.append(menuToggle, tasksListName);
+  if (list.idx >= 0) {
+    const more = createListMoreDropdown();
+    tasksHeadingContainer.append(more.button, more.dropdown);
+  }
 
   return tasksHeadingContainer;
 }
@@ -516,8 +520,18 @@ function createAddTaskBar() {
     } else {
       date = null;
     }
-    const task = new Task(taskIdx, name, "", date, useTime, priority, false);
+    const task = new Task(
+      taskIdx,
+      name,
+      "",
+      date,
+      useTime,
+      priority,
+      false,
+      list
+    );
     list.addTask(task);
+    App.sortTasksIntoPresetLists();
     displayNewTask();
     resetForm();
   };
@@ -703,6 +717,7 @@ export function initViewTaskSection(task) {
     horizontalSeparator,
     createViewTaskBody(task.name, task.desc)
   );
+
   saveTaskOnEdit(viewTaskSection);
   linkCheckboxes();
 }
@@ -787,13 +802,10 @@ function createViewTaskHeading(task) {
     task.dueDate = dueDate;
     task.useTime = useTime;
     displayDueDate(dueDate, useTime);
-
-    const taskText = document.querySelector(
-      "#tasks-section .task.active .due-date"
-    );
-    taskText.textContent = displayTaskDueDate(dueDate, useTime);
-    if (isBefore(dueDate, new Date())) taskText.style.color = "#c30000";
-    else taskText.style.color = "#4872f9";
+    App.sortTasksIntoPresetLists();
+    clearSection("view-task-section");
+    clearSection("tasks-container");
+    addToTasks();
   });
 
   // open priority picker
@@ -903,14 +915,19 @@ function createViewTaskBody(name, desc) {
 }
 
 function deleteTask() {
+  // idx in current list (may not be parent list)
   const listIdx = getListIdx();
   const taskIdx = getTaskIdx();
-  const list = getList(listIdx);
-
-  list.deleteTask(taskIdx);
-
+  // actual parent list and actual task idx (could be the same as listIdx and taskIdx)
+  const task = getList(listIdx).tasks[taskIdx];
+  const parentList = task.parent;
+  const actualTaskIdx = parentList.tasks.findIndex(
+    (element) => element === task
+  );
+  parentList.deleteTask(actualTaskIdx);
   clearSection("view-task-section");
   clearSection("tasks-container");
+  App.sortTasksIntoPresetLists();
   addToTasks();
 }
 
@@ -951,6 +968,13 @@ function savePriorityOnEdit() {
 
   const taskContainer = document.querySelector(".task.active");
   taskContainer.dataset.priority = priority;
+
+  const viewTaskSection = document.getElementById("view-task-section");
+  viewTaskSection.dataset.priority = priority;
+}
+
+function saveDateOnEdit() {
+  // should refactor the datepicker code into here
 }
 
 function createAddListModal() {

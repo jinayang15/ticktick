@@ -15,7 +15,7 @@
   - [x] Allow for tasks to be edited `**`
   - [x] Allow for lists to be added/deleted `***`
   - [x] Allow for tasks to be added/deleted `****`
-  - [ ] Lists for today, next 7 days, and all tasks `**`
+  - [x] Lists for today, next 7 days, and all tasks `**`
   - [ ] UI Touchups `*`
   - [ ] Reorganize code so that display controller doesn't control everything
 

@@ -123,6 +123,7 @@ hr.vertical {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .tasks.heading.svg {
@@ -199,7 +200,6 @@ hr.vertical {
 
 .add-task.input.container {
   position: relative;
-  margin-top: 1rem;
   margin-bottom: 0.5rem;
 }
 

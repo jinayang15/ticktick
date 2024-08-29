@@ -17,7 +17,8 @@ function main() {
       new Date(2024, 7, 17),
       false,
       0,
-      true
+      true,
+      defaultList
     ),
     new Task(
       1,
@@ -26,10 +27,11 @@ function main() {
       new Date(2024, 5, 13),
       false,
       0,
-      false
+      false,
+      defaultList
     )
   );
-
+  App.sortTasksIntoPresetLists();
   Display.initCategoriesSection();
 }
 

@@ -8,7 +8,8 @@ export default class Task {
     dueDate,
     useTime = false,
     priority,
-    complete
+    complete,
+    parent
   ) {
     this.idx = idx;
     this.name = name;
@@ -17,6 +18,7 @@ export default class Task {
     this.useTime = useTime; // bool indicating whether to include datetime
     this.priority = priority;
     this.complete = complete;
+    this.parent = parent;
   }
   get idx() {
     return this._idx;
@@ -59,6 +61,12 @@ export default class Task {
   }
   set complete(complete) {
     this._complete = complete;
+  }
+  get parent() {
+    return this._parent;
+  }
+  set parent(parent) {
+    this._parent = parent;
   }
   toString() {
     return `${this.name} ${this.dueDate.toDateString()}`;
