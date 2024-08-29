@@ -665,7 +665,6 @@ function createTaskClickable(task) {
   const taskCheckboxLabel = taskContainer.querySelector("label");
   taskContainer.addEventListener("click", (e) => {
     if (!taskCheckboxLabel.contains(e.target)) {
-      console.log("active task");
       disableActiveTask();
       taskContainer.classList.add("active");
       hideTaskSeparator(taskContainer.dataset.task);

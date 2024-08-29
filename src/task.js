@@ -9,7 +9,7 @@ export default class Task {
     useTime = false,
     priority,
     complete,
-    parent
+    listParent
   ) {
     this.idx = idx;
     this.name = name;
@@ -18,7 +18,7 @@ export default class Task {
     this.useTime = useTime; // bool indicating whether to include datetime
     this.priority = priority;
     this.complete = complete;
-    this.parent = parent;
+    this.listParent = listParent;
   }
   get idx() {
     return this._idx;
@@ -62,11 +62,11 @@ export default class Task {
   set complete(complete) {
     this._complete = complete;
   }
-  get parent() {
-    return this._parent;
+  get listParent() {
+    return this._listParent;
   }
-  set parent(parent) {
-    this._parent = parent;
+  set listParent(listParent) {
+    this._listParent = listParent;
   }
   toString() {
     return `${this.name} ${this.dueDate.toDateString()}`;
