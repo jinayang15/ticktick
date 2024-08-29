@@ -245,11 +245,13 @@ function addToTasks() {
 
   for (let i = 0; i < list.tasks.length; i++) {
     list.tasks[i].idx = i;
-    taskSeparator.dataset.task = i;
-    tasksContainer.append(
-      createTaskClickable(list.tasks[i]),
-      taskSeparator.cloneNode(true)
-    );
+    if (!list.tasks[i].complete || list.idx == App.getCompletedList().idx) {
+      taskSeparator.dataset.task = i;
+      tasksContainer.append(
+        createTaskClickable(list.tasks[i]),
+        taskSeparator.cloneNode(true)
+      );
+    }
   }
 }
 
@@ -596,6 +598,15 @@ function createTask(task) {
   taskCheckmark.classList.add("checkmark");
   taskCheckboxLabel.append(taskCheckbox, taskCheckmark);
 
+  taskCheckbox.addEventListener("click", () => {
+    task.complete = !task.complete;
+    taskCheckbox.checked = task.complete;
+    clearSection("view-task-section");
+    clearSection("tasks-container");
+    App.sortTasksIntoPresetLists();
+    addToTasks();
+  });
+
   const taskDetailsContainer = document.createElement("div");
   taskDetailsContainer.classList.add("task-details", "container");
 
@@ -651,12 +662,16 @@ function displayTaskDueDate(dueDate, useTime) {
 
 function createTaskClickable(task) {
   const taskContainer = createTask(task);
-  taskContainer.addEventListener("click", () => {
-    disableActiveTask();
-    taskContainer.classList.add("active");
-    hideTaskSeparator(taskContainer.dataset.task);
-    clearSection("view-task-section");
-    initViewTaskSection(task);
+  const taskCheckboxLabel = taskContainer.querySelector("label");
+  taskContainer.addEventListener("click", (e) => {
+    if (!taskCheckboxLabel.contains(e.target)) {
+      console.log("active task");
+      disableActiveTask();
+      taskContainer.classList.add("active");
+      hideTaskSeparator(taskContainer.dataset.task);
+      clearSection("view-task-section");
+      initViewTaskSection(task);
+    }
   });
   taskContainer.addEventListener("mouseover", () => {
     if (!taskContainer.classList.contains("active")) {
@@ -1056,11 +1071,14 @@ function linkCheckboxes() {
 
   viewTaskCheckbox.checked = taskCheckbox.checked;
   taskCheckbox.addEventListener("click", () => {
-    list.tasks[taskIdx].complete = taskCheckbox.checked;
     viewTaskCheckbox.checked = !viewTaskCheckbox.checked;
   });
   viewTaskCheckbox.addEventListener("click", () => {
     list.tasks[taskIdx].complete = viewTaskCheckbox.checked;
     taskCheckbox.checked = !taskCheckbox.checked;
+    clearSection("view-task-section");
+    clearSection("tasks-container");
+    App.sortTasksIntoPresetLists();
+    addToTasks();
   });
 }

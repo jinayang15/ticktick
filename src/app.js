@@ -45,6 +45,7 @@ export function sortTasksIntoPresetLists() {
   _todayList.tasks = [];
   _weekList.tasks = [];
   _allList.tasks = [];
+  _completedList.tasks = [];
   for (const list of _userLists) {
     _allList.tasks = _allList.tasks.concat(list.tasks);
   }
@@ -61,5 +62,8 @@ export function sortTasksIntoPresetLists() {
       return diff <= 7;
     }
     return false;
+  });
+  _completedList.tasks = _allList.tasks.filter((task, idx, array) => {
+    return task.complete == true;
   });
 }
