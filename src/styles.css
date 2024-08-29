@@ -90,6 +90,7 @@ hr.vertical {
   overflow-x: hidden;
   text-overflow: ellipsis;
   min-width: 0;
+  white-space: nowrap;
 }
 
 .group-by.item.active {
@@ -199,7 +200,7 @@ hr.vertical {
 }
 
 .add-task.input.container {
-  position: relative;
+  position: relative;oup
   margin-bottom: 0.5rem;
 }
 
