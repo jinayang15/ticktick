@@ -212,6 +212,7 @@ function deleteList() {
   App.deleteList(listIdx);
   clearSection("tasks-section");
   clearSection("group-by-list");
+  App.sortTasksIntoPresetLists();
   addToGroupByList();
 }
 

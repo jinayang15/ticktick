@@ -9,6 +9,7 @@ import "./styles.css";
 window.addEventListener("beforeunload", saveListsOnClose);
 
 function saveListsOnClose() {
+  localStorage.clear();
   for (const list of App.getLists()) {
     const jsonString = JSON.stringify(list, function (key, value) {
       if (key == "_listParent") return list.idx;
