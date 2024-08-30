@@ -7,7 +7,7 @@ Goal: Replicate TickTick's To Do feature and eventually add in the calendar feat
 
 ### Demo Video
 
-https://www.youtube.com/watch?v=rmULHgDWuFY
+<video controls src="./TickTick Clone Web App Demo.mp4" title="Title"></video>
 
 ### Next Steps
 
