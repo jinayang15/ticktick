@@ -1,24 +1,12 @@
 # TickTick
 
 ### Clone of TickTick To Do List App
+Goal: Replicate TickTick's To Do feature and eventually add in the calendar feature (because I hate subscriptions)
+**NOT RESPONSIVE ON MOBILE**
 
-### Goal: Replicate TickTick's To Do feature and eventually add in the calendar feature (because I hate subscriptions)
+### Demo Video
+<iframe src="https://uofwaterloo-my.sharepoint.com/personal/j245yang_uwaterloo_ca/_layouts/15/embed.aspx?UniqueId=032d1c6f-1085-4cff-b062-7658ca8d21f7&nav=%7B%22playbackOptions%22%3A%7B%22startTimeInSeconds%22%3A0%7D%7D&embed=%7B%22af%22%3Atrue%2C%22ust%22%3Atrue%2C%22hv%22%3A%22CopyEmbedCode%22%7D&referrer=StreamWebApp&referrerScenario=EmbedDialog.Create" width="640" height="360" frameborder="0" scrolling="no" allowfullscreen title="2024-08-29 22-24-34.mov"></iframe>
 
-#### To do list (haha):
-###### _# of stars out of 5 = perceived difficulty_
-- [x] Develop a fully working console version of a to-do list app
-- [x] Add in UI elements
-- [ ] Rig everything up with JS
-  - [x] Refactor the addToSection functions to make more sense... `*`
-  - [x] Add priority and dates in properly `**`
-  - [x] Attach data attributes to elements corresponding to the list/task in memory for easy access `*`
-  - [x] Allow for tasks to be edited `**`
-  - [x] Allow for lists to be added/deleted `***`
-  - [x] Allow for tasks to be added/deleted `****`
-  - [x] Lists for today, next 7 days, and all tasks `**`
-  - [ ] UI Touchups `*`
-  - [ ] Reorganize code so that display controller doesn't control everything
-
-##### Notes:
-- Doing the console version was kind of unnecessary this time
-- Why did the UI take me so long
+### Next Steps
+- [ ] Fix date-picker not showing local time
+- [ ] Add sort button
