@@ -8,7 +8,6 @@ Goal: Replicate TickTick's To Do feature and eventually add in the calendar feat
 ### Demo Video
 
 https://www.youtube.com/watch?v=rmULHgDWuFY
-<video controls src="https://youtu.be/rmULHgDWuFY" title="Demo" width="640" height="360"></video>
 
 ### Next Steps
 
