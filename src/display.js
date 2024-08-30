@@ -935,7 +935,7 @@ function deleteTask() {
   const taskIdx = getTaskIdx();
   // actual parent list and actual task idx (could be the same as listIdx and taskIdx)
   const task = getList(listIdx).tasks[taskIdx];
-  const parentList = task.parent;
+  const parentList = task.listParent;
   const actualTaskIdx = parentList.tasks.findIndex(
     (element) => element === task
   );
