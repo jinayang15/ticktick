@@ -70,6 +70,7 @@ hr.vertical {
   margin-bottom: 0.25rem;
   border-radius: 6px;
   overflow-x: hidden;
+  white-space: nowrap;
 }
 
 .group-by.item:hover {
@@ -90,7 +91,6 @@ hr.vertical {
   overflow-x: hidden;
   text-overflow: ellipsis;
   min-width: 0;
-  white-space: nowrap;
 }
 
 .group-by.item.active {
@@ -190,6 +190,7 @@ hr.vertical {
   min-width: 0;
   text-overflow: ellipsis;
   max-width: 50%;
+  white-space: nowrap;
 }
 
 #view-task-section {
