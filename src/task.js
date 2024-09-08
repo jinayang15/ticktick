@@ -1,5 +1,3 @@
-import * as App from "./app";
-
 export default class Task {
   constructor(
     idx,
@@ -9,7 +7,7 @@ export default class Task {
     useTime = false,
     priority,
     complete,
-    listParent
+    listParent,
   ) {
     this.idx = idx;
     this.name = name;

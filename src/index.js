@@ -47,7 +47,7 @@ function convertJSONtoTask(list, json) {
     json._useTime,
     json._priority,
     json._complete,
-    list
+    list,
   );
   return task;
 }

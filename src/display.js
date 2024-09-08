@@ -9,7 +9,7 @@ import Task from "./task";
 import * as App from "./app";
 
 const images = importAllAssets(
-  require.context("./assets", false, /\.(png|jpe?g|svg)$/)
+  require.context("./assets", false, /\.(png|jpe?g|svg)$/),
 );
 
 function importAllAssets(r) {
@@ -73,7 +73,7 @@ export function initCategoriesSection() {
     hrSeparator,
     groupByListContainer,
     hrSeparator.cloneNode(true),
-    createGroupByOther()
+    createGroupByOther(),
   );
 
   addToGroupByList();
@@ -84,19 +84,19 @@ function createGroupByPeriod() {
     "Today",
     "calendar_view_day",
     "period",
-    -3
+    -3,
   );
   const weekListContainer = createGroupByItem(
     "Next 7 Days",
     "calendar_view_week",
     "period",
-    -2
+    -2,
   );
   const allListContainer = createGroupByItem(
     "All Tasks",
     "all_task_list",
     "period",
-    -1
+    -1,
   );
 
   const groupByPeriodContainer = document.createElement("div");
@@ -104,7 +104,7 @@ function createGroupByPeriod() {
   groupByPeriodContainer.append(
     makeListClickable(todayListContainer, App.getTodayList()),
     makeListClickable(weekListContainer, App.getWeekList()),
-    makeListClickable(allListContainer, App.getAllList())
+    makeListClickable(allListContainer, App.getAllList()),
   );
   return groupByPeriodContainer;
 }
@@ -135,7 +135,7 @@ function addToGroupByList() {
       list.name,
       "list_icon",
       "list",
-      list.idx
+      list.idx,
     );
     groupByListContainer.appendChild(makeListClickable(listContainer, list));
   }
@@ -145,12 +145,12 @@ function createGroupByOther() {
   const completedListContainer = createGroupByItem(
     "Completed",
     "checkbox_checked",
-    "other"
+    "other",
   );
   const groupByOtherContainer = document.createElement("div");
   groupByOtherContainer.classList.add("group-by", "other", "container");
   groupByOtherContainer.append(
-    makeListClickable(completedListContainer, App.getCompletedList())
+    makeListClickable(completedListContainer, App.getCompletedList()),
   );
 
   return groupByOtherContainer;
@@ -195,7 +195,7 @@ function displayNewListInCategories() {
     newList.name,
     "list_icon",
     "list",
-    newList.idx
+    newList.idx,
   );
   groupByListContainer.appendChild(makeListClickable(listContainer, newList));
 }
@@ -228,7 +228,7 @@ export function initTasksSection(list) {
     tasksSection.append(
       createTaskSectionHeading(list),
       createAddTaskBar(),
-      tasksContainer
+      tasksContainer,
     );
   else tasksSection.append(createTaskSectionHeading(list), tasksContainer);
   addToTasks();
@@ -250,7 +250,7 @@ function addToTasks() {
       taskSeparator.dataset.task = i;
       tasksContainer.append(
         createTaskClickable(list.tasks[i]),
-        taskSeparator.cloneNode(true)
+        taskSeparator.cloneNode(true),
       );
     }
   }
@@ -366,7 +366,7 @@ function createAddTaskBar() {
     "add-task",
     "svgs",
     "container",
-    "hidden"
+    "hidden",
   );
 
   const addTaskDateLabel = document.createElement("label");
@@ -390,7 +390,7 @@ function createAddTaskBar() {
     "add-task",
     "priority",
     "label",
-    "hidden"
+    "hidden",
   );
 
   const addTaskPriorityDialog = createPriorityDialog("add-task");
@@ -453,8 +453,8 @@ function createAddTaskBar() {
     setTimeout(() => {
       const priority = Number(
         addTaskPriorityContainer.querySelector(
-          '.priority-picker input[name="priority"]:checked'
-        ).value
+          '.priority-picker input[name="priority"]:checked',
+        ).value,
       );
       addTaskPriorityIcon.src = changePriorityIcon(priority);
     }, 0);
@@ -500,8 +500,8 @@ function createAddTaskBar() {
     // reset priority flag icon
     const priority = Number(
       addTaskPriorityContainer.querySelector(
-        '.priority-picker input[name="priority"]:checked'
-      ).value
+        '.priority-picker input[name="priority"]:checked',
+      ).value,
     );
     addTaskPriorityIcon.src = changePriorityIcon(priority);
   };
@@ -531,7 +531,7 @@ function createAddTaskBar() {
       useTime,
       priority,
       false,
-      list
+      list,
     );
     list.addTask(task);
     App.sortTasksIntoPresetLists();
@@ -701,14 +701,14 @@ function displayNewTask() {
 
 function showTaskSeparator(taskIdx) {
   const taskSeparator = document.querySelector(
-    `.task.separator[data-task='${taskIdx}']`
+    `.task.separator[data-task='${taskIdx}']`,
   );
   taskSeparator.classList.remove("hidden");
 }
 
 function hideTaskSeparator(taskIdx) {
   const taskSeparator = document.querySelector(
-    `.task.separator[data-task='${taskIdx}']`
+    `.task.separator[data-task='${taskIdx}']`,
   );
   taskSeparator.classList.add("hidden");
 }
@@ -730,7 +730,7 @@ export function initViewTaskSection(task) {
   viewTaskSection.append(
     createViewTaskHeading(task),
     horizontalSeparator,
-    createViewTaskBody(task.name, task.desc)
+    createViewTaskBody(task.name, task.desc),
   );
 
   saveTaskOnEdit(viewTaskSection);
@@ -776,7 +776,7 @@ function createViewTaskHeading(task) {
 
   const viewTaskPriorityDialog = createPriorityDialog(
     "view-task",
-    task.priority
+    task.priority,
   );
 
   const moreDropdown = createTaskMoreDropdown();
@@ -784,12 +784,12 @@ function createViewTaskHeading(task) {
   viewTaskDateContainer.append(
     viewTaskDateIcon,
     viewTaskDate,
-    viewTaskDateInput
+    viewTaskDateInput,
   );
 
   viewTaskPriorityContainer.append(
     viewTaskPriorityIcon,
-    viewTaskPriorityDialog
+    viewTaskPriorityDialog,
   );
   // open date-picker
   viewTaskDateContainer.addEventListener("click", (e) => {
@@ -836,8 +836,8 @@ function createViewTaskHeading(task) {
     setTimeout(() => {
       const priority = Number(
         viewTaskPriorityContainer.querySelector(
-          '.priority-picker input[name="priority"]:checked'
-        ).value
+          '.priority-picker input[name="priority"]:checked',
+        ).value,
       );
       viewTaskPriorityIcon.src = changePriorityIcon(priority);
       savePriorityOnEdit();
@@ -850,7 +850,7 @@ function createViewTaskHeading(task) {
     viewTaskDateContainer,
     viewTaskPriorityContainer,
     moreDropdown.button,
-    moreDropdown.dropdown
+    moreDropdown.dropdown,
   );
 
   const displayDueDate = function (dueDate, useTime) {
@@ -937,7 +937,7 @@ function deleteTask() {
   const task = getList(listIdx).tasks[taskIdx];
   const parentList = task.listParent;
   const actualTaskIdx = parentList.tasks.findIndex(
-    (element) => element === task
+    (element) => element === task,
   );
   parentList.deleteTask(actualTaskIdx);
   clearSection("view-task-section");
@@ -954,7 +954,7 @@ function saveTaskOnEdit(viewTaskSection) {
     const listIdx = getListIdx();
     const taskIdx = getTaskIdx();
     const clickableTaskName = document.querySelector(
-      `.task.container[data-task='${taskIdx}'] .name`
+      `.task.container[data-task='${taskIdx}'] .name`,
     );
 
     const lists = App.getLists();
@@ -977,7 +977,7 @@ function savePriorityOnEdit() {
   const list = getList(listIdx);
   const task = list.tasks[taskIdx];
   const priority = Number(
-    document.querySelector(".view-task.priority-picker input:checked").value
+    document.querySelector(".view-task.priority-picker input:checked").value,
   );
   task.priority = priority;
 
@@ -1060,10 +1060,10 @@ function createAddListModal() {
 // toggling task section checkbox also toggle view task section checkbox
 function linkCheckboxes() {
   const taskCheckbox = document.querySelector(
-    `.task.container.active .checkbox`
+    `.task.container.active .checkbox`,
   );
   const viewTaskCheckbox = document.querySelector(
-    ".view-task.heading.container .checkbox"
+    ".view-task.heading.container .checkbox",
   );
   const listIdx = getListIdx();
   const taskIdx = getTaskIdx();
