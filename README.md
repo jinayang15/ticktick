@@ -2,9 +2,7 @@
 
 ### Clone of TickTick To Do List App
 
-Goal: Replicate TickTick's To Do feature and eventually add in the calendar feature (because I hate subscriptions)
-
-**NOT RESPONSIVE ON MOBILE**
+Goal: Replicate TickTick's To Do feature and eventually add in the calendar feature to avoid the subscription
 
 ### Demo Video
 
