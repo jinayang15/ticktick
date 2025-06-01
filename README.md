@@ -3,6 +3,7 @@
 ### Clone of TickTick To Do List App
 
 Goal: Replicate TickTick's To Do feature and eventually add in the calendar feature to avoid the subscription
+Live: https://jinayang15.github.io/ticktick/
 
 ### Demo Video
 
